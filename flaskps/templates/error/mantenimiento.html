@@ -1,0 +1,11 @@
+<div class="txtMantenimiento">
+    <h3 class="display-4">El sitio se encuentra en mantenimiento</h3>
+</div>
+
+<div class="mantenimiento">
+  <img src="{{ url_for('static', filename='img/mantenimiento.jpg') }}" alt="mantenimiento">
+</div>
+
+{% if session %}
+<a class="" href="{{ url_for('auth_logout') }}" id="Cerrar_sesion" name="Cerrar sesion">Cerrar sesion</a>
+{% endif %}

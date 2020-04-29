@@ -1,0 +1,174 @@
+{% extends "master/master.html" %}
+{% block title %}Perfil{% endblock %}
+{% block content %}
+<link href="{{ url_for('static', filename='css/perfil.css') }}" rel="stylesheet" >
+<script type="text/javascript" src="/static/js/perfil.js"></script>
+<script type="text/javascript" src="/static/js/usuariosCrearEditar.js"></script>
+<!-- Breadcrumbs-->
+<div class="row">
+    <div class="col-11">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('pages_home') }}">Home</a>
+            </li>
+            <li class="breadcrumb-item active">Mi Perfil</li>
+        </ol>
+    </div>
+    <div class="col-1">
+        <a class="btn btn-info" href="{{ url_for('pages_home') }}">Volver</a>             
+    </div>
+</div>
+<!-- Add icon library -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show mt-3" role="alert">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+<div class="table-title">
+    <div class="row">
+        <div class="col-sm-6">
+            <h2>Mi Perfil</h2>
+        </div>
+        <div class="col-sm-6">
+            <form action = "{{ url_for('user_update_temp') }}" method="POST">
+                <input type="hidden" name="email" value="{{user.email}}">
+                <input type="submit" value="Modificar Perfil" class="btn btn-info">
+            </form>
+            <!-- <a href="#editEmployeeModal" class="btn btn-info" data-toggle="modal"><i class="fas fa-user-edit"></i> <span>Editar Perfil</span></a> -->
+            <!-- <a href="#editContrasenaModal" class="btn btn-info" data-toggle="modal"><i class="fas fa-edit"></i> <span>Editar Perfil</span></a> -->
+        </div>
+    </div>
+</div>
+<div id="user-profile-2" class="user-profile">
+    <div class="tabbable">
+        <div class="tab-content no-border padding-24">
+            <div id="home" class="tab-pane in active">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-3 center">
+                        <span class="profile-picture">
+                            <img class="editable img-responsive" width="150" alt="photo" id="avatar2" src="{{ url_for('static', filename='img/user-avatar.png') }}">
+                        </span>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-9">
+                        <h4 class="blue">
+                            <span class="middle">{{user.first_name}} {{user.last_name}}</span>
+                        </h4>
+
+                        <div class="profile-user-info">
+                            <div class="profile-info-row">
+                                <div class="profile-info-name"> Usuario </div>
+
+                                <div class="profile-info-value">
+                                    <span>{{user.username}}</span>
+                                </div>
+                            </div>
+
+                            <div class="profile-info-row">
+                                <div class="profile-info-name"> Email </div>
+
+                                <div class="profile-info-value">
+                                    <span>{{user.email}}</span>
+                                </div>
+                            </div>
+                            <div class="profile-info-row">
+                                <div class="profile-info-name"> Unido </div>
+
+                                <div class="profile-info-value">
+                                    <span>{{user.created_at.strftime('%d-%m-%Y')}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div><!-- /.col -->
+                </div><!-- /.row -->
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Edit Modal HTML -->
+<div id="editEmployeeModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="" method="POST">
+                <div class="modal-header">
+                    <h4 class="modal-title">Editar Perfil</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="usuario">Usuario</label>
+                        <input name="usuario" id="usuario" type="text" class="form-control" value="{{user.username}}">
+                        <span style="color:red" id="spanUsuario"></span>
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input name="email" id="email" type="text" class="form-control" value="{{user.email}}">
+                        <span style="color:red" id="spanEmail"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="firstName">Nombre</label>
+                        <input name="firstName" id="firstName" type="text" class="form-control" value="{{user.first_name}}">
+                        <span style="color:red" id="spanFirstName"></span>                      
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Apellido</label>
+                        <input name="lastName" id="lastName" type="text" class="form-control" value="{{user.last_name}}">
+                        <span style="color:red" id="spanLastName"></span>
+                    </div>
+                    <input type="hidden" id="id" name="id" value="{{ user.id }}"/>
+                    <input type="hidden" id="oldUsuario" name="oldUsuario" value="{{ user.username }}"/>
+                    <input type="hidden" id="oldEmail" name="oldEmail" value="{{ user.email }}"/>
+                    <!-- <input type="hidden" name="id" value="{{user.id}}">
+                    <input type="hidden" name="password" value="{{user.password}}"> -->
+                </div>
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancelar">
+                    <input type="button" onclick="validarAgregarUsuario()" class="btn btn-info" value="Guardar">                    
+                    <!-- <input type="submit" class="btn btn-info" value="Guardar"> -->
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div id="editContrasenaModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="" method="POST" id="formChangePassword">
+                <div class="modal-header">
+                    <h4 class="modal-title">Cambiar Contraseña</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="actualpassword">Contraseña Actual</label>
+                        <input name="actualpassword" type="password" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="newpassword">Contraseña Nueva</label>
+                        <input name="newpassword" type="password" class="form-control" id="newpassword" required>                        
+                    </div>
+                    <div class="form-group">
+                        <label for="newpasswordcopy">Repetir Contraseña Nueva</label>
+                        <input name="newpasswordcopy" type="password" class="form-control" id="newpasswordcopy" required></input>
+                        <span style="color:red" id="spanNewPasswordCopy"></span>
+                    </div>
+                    <input type="hidden" name="id" value="{{user.id}}">
+                </div>
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancelar">
+                    <input type="button" class="btn btn-info" value="Cambiar" onclick="validatePasswordChange()">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

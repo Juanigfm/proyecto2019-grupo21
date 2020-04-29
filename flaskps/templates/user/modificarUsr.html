@@ -1,0 +1,205 @@
+{% extends "master/master.html" %}
+{% block title %}Perfil{% endblock %}
+{% block content %}
+<script src="https://unpkg.com/vue"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+<script type="text/javascript" src="/static/js/usuariosCrearEditar.js"></script>
+<!-- Add icon library -->
+<link href="{{ url_for('static', filename='css/perfil.css') }}" rel="stylesheet" >
+
+
+<!-- <div id="app">
+    <ul v-if="locations && locations.length">
+        <h1>Orquesta Escuela de Berisso:</h1>
+        <li v-for="local in locations">
+        {{ local }} 
+        </li>
+    </ul>
+    <ul v-if="errors && errors.length">
+        <h1>Errores:</h1>    
+        <li v-for="error of errors">
+            
+        </li>
+    </ul>
+</div> -->
+
+<!-- Breadcrumbs-->
+<div class="row">
+    <div class="col-11">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('pages_home') }}">Home</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('listado_usuarios') }}">Listado Usuarios</a>
+            </li>
+            <li class="breadcrumb-item active">Modificar Usuario</li>
+        </ol>
+    </div>
+    <div class="col-1">
+        <a class="btn btn-info" href="{{ url_for('listado_usuarios') }}">Volver</a>             
+    </div>
+</div>
+
+<div class="table-title">
+    <div class="row">
+        <div class="col-sm-6">
+            <h2>Modificar Usuario</h2>
+        </div>
+    </div>
+</div>
+
+    {% if titulo is defined and '' != titulo %}
+        <!-- <div class="alert alert-success alert-dismissible fade show mt-3" role="alert"> -->
+        <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+            {{ titulo }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    {% endif %}
+    <form action="{{ url_for('user_update') }}" method="POST" id="formAgregar" name="formAgregar">
+        <div class="modal-body">
+
+            <div class="form-group">
+                <label for="Usuario">Usuario</label>
+                {% if formRequest is defined %}
+                    <input type="text" id = "usuario" name="usuario" class="form-control" value="{{ formRequest.usuario }}">
+                {% else %}
+                    <input type="text" id = "usuario" name="usuario" class="form-control" value="{{ user.username }}">
+                {% endif %}
+                <span style="color:red" id="spanUsuario">
+                {% if form is defined and form.errors.usuario %}
+                    {% for msjError in form.errors.usuario %}
+                        {{msjError}}
+                    {% endfor %}
+                {% endif %}
+                </span>
+            </div>
+            <div class="form-group">
+                <label for="Email">Email</label>
+                {% if formRequest is defined %}
+                <input type="email" name="email" id="email" class="form-control" value="{{ formRequest.email }}">
+                {% else %}
+                <input type="email" name="email" id="email" class="form-control" value="{{ user.email }}">
+                {% endif %}
+                <span style="color:red" id="spanEmail">
+                {% if form is defined and form.errors.email %}
+                    {% for msjError in form.errors.email %}
+                        {{msjError}}
+                    {% endfor %}
+                {% endif %}
+                </span>
+            </div>
+            <div class="form-group">
+                <label for="Contraseña">Contraseña</label>
+                {% if formRequest is defined %}
+                    <input type="password" name="password" id="password" class="form-control" value="{{ formRequest.password }}">
+                {% else %}
+                    <input type="password" name="password" id="password" class="form-control" value="{{ user.password }}">
+                {% endif %}
+                <span style="color:red" id="spanPassword">
+                {% if form is defined and form.errors.password %}
+                    {% for msjError in form.errors.password %}
+                        {{msjError}}
+                    {% endfor %}
+                {% endif %}
+                </span>
+            </div>
+            <div class="form-group">
+                <label for="Nombre">Nombre</label>
+                {% if formRequest is defined %}
+                <input type="text" name="firstName" id="firstName" class="form-control" value="{{ formRequest.firstName }}">
+                {% else %}
+                <input type="text" name="firstName" id="firstName" class="form-control" value="{{ user.first_name }}">
+                {% endif %}
+                <span style="color:red" id="spanFirstName">
+                {% if form is defined and form.errors.firstName %}
+                    {% for msjError in form.errors.firstName %}
+                        {{msjError}}
+                    {% endfor %}
+                {% endif %}
+                </span>
+            </div>
+            <div class="form-group">
+                <label for="Apellido">Apellido</label>
+                {% if formRequest is defined %}
+                <input type="text" name="lastName" id="lastName" class="form-control" value="{{ formRequest.lastName }}">
+                {% else %}
+                <input type="text" name="lastName" id="lastName" class="form-control" value="{{ user.last_name }}">
+                {% endif %}
+                <span style="color:red" id="spanLastName">
+                {% if form is defined and form.errors.lastName %}
+                    {% for msjError in form.errors.lastName %}
+                        {{msjError}}
+                    {% endfor %}
+                {% endif %}
+                </span>
+            </div>
+        </div>
+        
+        {% if rolesUsuario is defined and not usuarioSesion %}
+        <div class="modal-header">
+            <h4 class="modal-title">Agregar Roles</h4>
+        </div>
+        <br>
+        <span style="color:red" id="spanRoles"></span>        
+        {% for rol in roles %}
+            {% if rol in rolesUsuario %}
+                <div>
+                    <input type="checkbox" id="roles_{{rol.id}}" name="roles" value="{{rol.id}}" checked>
+                    <label for="roles_{{rol.id}}">{{rol.nombre}}</label>
+                </div>
+            {% else %}
+                <div>
+                    <input type="checkbox" id="roles_{{rol.id}}" name="roles" value="{{rol.id}}">
+                    <label for="roles_{{rol.id}}">{{rol.nombre}}</label>
+                </div>
+            {% endif %}
+        {% endfor %}
+        {% endif %}
+
+        <!-- {% if form is defined and form.errors.roles %}
+            {% for msjError in form.errors.roles %}
+                <span style="color:red">{{msjError}}</span>
+            {% endfor %}
+        {% endif %} -->
+
+        <input type="hidden" id="id" name="id" value="{{ user.id }}"/>
+        <input type="hidden" id="oldUsuario" name="oldUsuario" value="{{ user.username }}"/>
+        <input type="hidden" id="oldEmail" name="oldEmail" value="{{ user.email }}"/>
+
+        <div class="modal-footer">
+            {% if usuarioSesion %}
+            <a type="button" class="btn btn-default" href="{{ url_for('user_perfil') }}">Cancelar</a>
+            {% else %}
+            <a type="button" class="btn btn-default" href="{{ url_for('listado_usuarios') }}">Cancelar</a>
+            {% endif %}
+            <input type="button" onclick="validarAgregarUsuario()" class="btn btn-success" value="Modificar">
+        </div>
+    </form>
+</div>
+
+{% endblock %}
+{% block script %}
+<script>
+    var app = new Vue({
+        el: '#app',
+        data: {
+        locations: [],
+        errors: []
+        },
+        created() {
+        axios.get('user_update')
+                .then(response => {
+                // JSON responses are automatically parsed.
+                this.locations = response.data.locations
+                })
+                .catch(e => {
+                this.errors.push(e)
+                })
+        }
+        })
+</script>
+{% endblock %}

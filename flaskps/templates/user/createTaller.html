@@ -1,0 +1,140 @@
+{% extends "master/master.html" %}
+<!-- {% from "macro.html" import macroExito %} -->
+{% block title %}Crear taller{% endblock %}
+{% block content %}
+<script type="text/javascript" src="/static/js/taller.js"></script>
+<script type="text/javascript" src="/static/js/usuariosCrearEditar.js"></script>
+{% if mapeo == "listadoTaller"%}
+<!-- Breadcrumbs-->
+<div class="row">
+    <div class="col-11">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('pages_home') }}">Home</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('listado_talleres') }}">Listado Talleres</a>
+            </li>
+            <li class="breadcrumb-item active">Crear Taller</li>
+        </ol>
+    </div>
+    <div class="col-1">
+        <a class="btn btn-info" href="{{ url_for('listado_talleres') }}">Volver</a>             
+    </div>
+</div>
+{% elif mapeo == "detalleCiclo" %}
+
+<!-- Breadcrumbs-->
+<div class="row">
+    <div class="col-11">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('pages_home') }}">Home</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('listado_ciclos') }}">Listado Ciclos Lectivos</a>
+            </li>
+            <li class="breadcrumb-item"></li>
+                <form action = "{{ url_for('ciclo_detalle') }}" method="POST" id="myform">
+                    <input type="hidden" name="clid" value="{{clid}}">
+                    <a href="#" onclick="document.getElementById('myform').submit()">Detalle Taller</a>
+                </form>
+                <!-- <a href="{{ url_for('ciclo_detalle') }}">Detalle Ciclo Lectivo</a> -->
+            <li class="breadcrumb-item"></li>
+            <li class="breadcrumb-item active">Crear Taller</li>
+        </ol>
+    </div>
+    <div class="col-1">
+        <form action = "{{ url_for('ciclo_detalle') }}" method="POST">
+            <input type="hidden" name="clid" value="{{clid}}">
+            <button class="btn btn-info" type="submit">Volver</button>
+        </form>             
+    </div>
+</div>
+{% endif%}
+<!-- Add icon library -->
+<link href="{{ url_for('static', filename='css/perfil.css') }}" rel="stylesheet" >
+<div class="table-title">
+    <div class="row">
+        <div class="col-sm-6">
+            <h2>Crear taller</h2>
+        </div>
+    </div>
+</div>
+<div>
+    {% if titulo is defined and '' != titulo %}
+    <!-- <div class="alert alert-success alert-dismissible fade show mt-3" role="alert"> -->
+    <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+        {{ titulo }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endif %}
+    <form action="{{ url_for('taller_create') }}" method="POST" id="formAgregar" name="formAgregar">
+        <div class="modal-body">
+
+            <div class="form-group">
+                <label for="">Nombre</label>
+                    <input type="text" id="nombre" name="nombre" class="form-control" value=""> 
+                    <span style="color:red" id="spanNombre"></span>               
+            </div>
+            <div class="form-group">
+                <label for="">Nombre corto</label>
+                <input type="text" name="nombrecorto" id="nombrecorto" class="form-control" value="">
+                <span style="color:red" id="spanNombreCorto"></span>                           
+            </div>
+            <div class="form-group">
+                <label for="">Nucleo</label> <br><br>
+                <select name="nucleo" id="nucleo">
+                    <option value="0">Seleccione</option>
+                    {% for n in nucleos %}
+                        <option value="{{n.id}}">{{ n.nombre }}</option>
+                    {% endfor %} 
+                </select>
+                <span style="color:red" id="spanNucleo"></span>                           
+            </div>
+            <div class="form-group">
+                <label for="">Docente titular</label>  <br><br>
+                <select name="docente">
+                    <option value="0">Sin docente</option>
+                    {% for docente in docentes %}
+                        <option value="{{docente.id}}">{{ docente.nombre }} {{ docente.apellido }}</option>
+                    {% endfor %} 
+                </select>                     
+            </div>           
+            {%  if clid is defined  %}
+                <input type="hidden" name="clid" value="{{clid}}"  required>
+                <input type="hidden" name="ciclo" value="{{clid}}"  required>
+                <div class="modal-footer">                    
+                    <input type="submit" onclick="" class="btn btn-success" value="Agregar">                     
+                </form>
+
+                <form action="{{ url_for('ciclo_detalle') }}" method="POST">
+                    <input type="hidden" name="clid" value="{{clid}}">
+                    <input type="submit" class="btn btn-danger" value="Cancelar">   
+                </form>
+
+                </div>                   
+                </div>                                                               
+            {%  else    %}
+                <div class="form-group">
+                        <label for="">Ciclo lectivo</label>    <br><br>
+                        <select name="ciclo" id="ciclo">
+                            <option value="0">Seleccione</option>               
+                            {% for ciclo in ciclos %}
+                                <option value="{{ciclo.id}}">{{ ciclo.fecha_ini.strftime('%d-%m-%Y') }} a {{ ciclo.fecha_fin.strftime('%d-%m-%Y') }}</option>
+                            {% endfor %}
+                        </select>
+                        <span style="color:red" id="spanCiclo"></span>                           
+                </div>  <br>
+                <div class="modal-footer">                    
+                    <input type="button" onclick="validarCrearTaller()" class="btn btn-success" value="Agregar">
+                    <a type="button" class="btn btn-default" href="{{ url_for('listado_talleres') }}">Cancelar</a>
+                </div>
+                </div>
+                </form>
+            {%  endif   %}                                
+</div>
+
+{% endblock %}

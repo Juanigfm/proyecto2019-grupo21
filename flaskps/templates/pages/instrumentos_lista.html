@@ -1,0 +1,215 @@
+{% extends "master/master.html" %}
+{% block title %}Instrumentos{% endblock %}
+{% block content %}
+<div class="">
+  <!-- Breadcrumbs-->
+  <div class="row">
+    <div class="col-11">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('pages_home') }}">Home</a>
+            </li>
+            <li class="breadcrumb-item active">Listado instrumentos</li>
+        </ol>
+    </div>
+    <div class="col-1">
+        <a class="btn btn-info" href="{{ url_for('pages_home') }}">Volver</a>             
+    </div>
+  </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show mt-3" role="alert">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="container-fluid navbar-dark bg-dark py-2">
+      <div class="row">
+        <div class="col">
+          <span class="navbar-brand">Lista de instrumentos</span>
+        </div>
+        <div class="col-md-auto align-self-end">
+          <form class="" method="POST" action="{{ url_for('instrumentos_lista') }}">
+            <div class="input-group">
+                <div class="input-group-append">
+                    <input type="text" placeholder="Buscar por nombre" name="nombreFiltro" {% if nombreFiltro is defined %} value="{{nombreFiltro}}" {% endif %}>
+                    <button type="submit"><i class="fa fa-search"></i></button>
+                    <button type="button" title="Limpiar filtro y recargar"><a href="{{ url_for('instrumentos_lista') }}"><i class="fas fa-redo"></i></a></button>
+                </div>
+            </div>
+          </form>
+        </div>
+        <div class="col-md-auto align-self-end">
+          {%  for p in session['permisos']    %}
+              {%  if "CREAR_INSTRUMENTO" in p['nombre'] %}
+              <a type="button" href="{{ url_for('instrumentos_nuevo') }}" class="btn btn-success">
+                <span>Agregar instrumento</span>
+              </a>
+              {%  endif   %}
+          {%  endfor  %}
+        </div>
+      </div>
+    </div>
+
+    <table class="table table-bordered table-striped">
+      <thead class="thead-light">
+        <tr class="">
+          <th class="col-4">Instrumento</th>
+          <th class="text-center col-3">Tipo</th>
+          <th class="text-center col-2">ID</th>
+          <th class="text-center col-3">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% if users|length > 0 %}
+        {% for user in users[params.init:(params.init+params.pag)] %}
+        <tr class="">
+          <th class="col-4">{{user.nombre}}</th>
+          <td class="text-center col-3">{{user.nomTipo}}</td>
+          <td class="text-center col-2">{{user.codigo}}</td>
+          <td class="text-center col-3">
+            <div class="row justify-content-md-center">
+            {%  for p in session['permisos']    %}
+                {%  if "DETALLE_INSTRUMENTO" in p['nombre'] %}
+                    <div class="col-2">
+                        <form action = "{{ url_for('instrumentos_detalle') }}" method="POST" id="formDetalle">
+                            <input type="hidden" name="hiddenid" id="hiddenid" value="{{user.id}}">
+                            <button type="submit" class="btn btn-link p-0">
+                              <i class="fas fa-search" data-toggle="tooltip" title="Detalle"></i>
+                            </button>
+                        </form>
+                    </div>
+                {%  endif   %}
+            {%  endfor  %}
+            {%  for p in session['permisos']    %}
+                {%  if "MODIFICAR_INSTRUMENTO" in p['nombre'] %}
+                  <div class="col-2">
+                        <form action = "{{ url_for('instrumentos_modificar') }}" method="POST" id="formModificar">
+                            <input type="hidden" name="idModificar" id="emailMod" value="{{user.id}}">
+                            <a href="#" class="edit" onclick="modUser(event,'{{ user.id }}')">
+                                <i class="material-icons" data-toggle="tooltip" title="Modificar">&#xE254;</i>
+                            </a>
+                        </form>
+                  </div>
+                {%  endif   %}
+            {%  endfor  %}
+            {%  for p in session['permisos']    %}
+                {%  if "ELIMINAR_INSTRUMENTO" in p['nombre'] %}
+                  <div class="col-2">
+                    <a href="#deleteEmployeeModal" class="delete" data-toggle="modal" onclick="borrarInstrumento({{user.id}})">
+                      <i class="material-icons" data-toggle="tooltip" title="Eliminar">&#xE872;</i>
+                    </a>
+                  </div>
+                {%  endif   %}
+            {%  endfor  %}
+            </div>
+          </td>
+        </tr>
+        {%  endfor  %}
+      {% endif %}
+      </tbody>
+    </table>
+    {% if users|length == 0 %}
+        <!--empty state de búsqueda-->
+        <div class="container d-flex justify-content-center align-items-center empty-state-home ">
+            <div class="empty-search text-center">
+            <label class="empty-txt">No se encontraron instrumentos</label>
+            <img src="{{ url_for('static', filename='img/empty-search.png') }}" class="img-fluid mx-auto d-block img-empty" width="150px" alt="empty-search">
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="row justify-content-md-center">
+      <div class="col-3 order-6 hint-text">Viendo de {{ params.init }} a {{ params.init + params.pag }}, de {{ users|length }} instrumentos</div>
+            {%  if function == 1 %}
+                <div class="col-2 order-1 text-right">
+                    {%  if not params.init==0 %}
+                        <form action = "{{url_for('instrumentos_lista')}}" method="POST">
+                            <input type="hidden" name="init" value="{{  params.init - params.pag }}">
+                            <input type="hidden" name="end" value="{{ params.init }}">
+                            <input type="submit" value="Anterior" class="btn btn-primary">
+                        </form>
+                    {%  endif   %}
+                </div>
+                <div class="col-2 order-12 text-left">
+                    {%  if not ((params.init+params.pag) >= (users|length)) %}
+                        <form action = "{{url_for('instrumentos_lista')}}" method="POST">
+                            <input type="hidden" name="init" value="{{ params.init + params.pag }}">
+                            <input type="hidden" name="end" value="{{ params.init + (2 * params.pag) }}">
+                            <input type="submit" value="Siguiente" class="btn btn-primary">
+                        </form>
+                    {%  endif   %}
+                </div>
+            {%  else  %}
+                <div class="col-2 order-1 text-right">
+                    {%  if not params.init==0 %}
+                        <form action = "{{url_for('instrumentos_lista')}}" method="POST">
+                            <input type="hidden" name="init" value="{{  params.init - params.pag }}">
+                            <input type="hidden" name="end" value="{{ params.init }}">
+                            <input type="submit" value="Anterior" class="btn btn-primary">
+                            {% if activoFiltro is defined and activoFiltro == '1' %}<input type="hidden" name="estadoFiltro" value="1">{% endif %}
+                            {% if activoFiltro is defined and activoFiltro == '0' %}<input type="hidden" name="estadoFiltro" value="0">{% endif %}
+                            {% if nombreFiltro is defined %}<input type="hidden" name="nombreFiltro" value="{{nombreFiltro}}">{% endif %}
+                        </form>
+                    {%  endif   %}
+                </div>
+                <div class="col-2 order-12 text-left">
+                    {%  if not ((params.init+params.pag) >= (users|length)) %}
+                        <form action = "{{url_for('instrumentos_lista')}}" method="POST">
+                            <input type="hidden" name="init" value="{{ params.init + params.pag }}">
+                            <input type="hidden" name="end" value="{{ params.init + (2 * params.pag) }}">
+                            <input type="submit" value="Siguiente" class="btn btn-primary">
+                            {% if activoFiltro is defined and activoFiltro == '1' %}<input type="hidden" name="estadoFiltro" value="1">{% endif %}
+                            {% if activoFiltro is defined and activoFiltro == '0' %}<input type="hidden" name="estadoFiltro" value="0">{% endif %}
+                            {% if nombreFiltro is defined %}<input type="hidden" name="nombreFiltro" value="{{nombreFiltro}}">{% endif %}
+                        </form>
+                    {%  endif   %}
+                </div>
+            {%  endif   %}
+    </div>
+
+    <!-- Volver a home -->
+    <div class="row mb-3">
+      <div class="col">
+        <a class="d-block small" href="{{ url_for('pages_home') }}"><i class="fas fa-chevron-left"></i> Volver</a>
+      </div>
+    </div>
+
+    {%  for p in session['permisos']    %}
+        {%  if "ELIMINAR_INSTRUMENTO" in p['nombre'] %}
+        <!-- Delete Modal HTML -->
+            <div id="deleteEmployeeModal" class="modal fade">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <form action="{{ url_for('instrumentos_borrar') }}" method="POST">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Eliminar instrumento</h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                    <div class="form-group">
+                                        <input type="hidden" id="hiddenAluId" name="hiddenAluId">
+                                    </div>
+                                <p>¿Está seguro de que desea eliminarlo?</p>
+                                <p class="text-danger"><small>Al eliminarlo se borrará permanentemente</small></p>
+                            </div>
+                            <div class="modal-footer">
+                                <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancelar">
+                                <input type="submit" class="btn btn-danger" value="Eliminar">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {%  endif   %}
+    {%  endfor  %}
+
+</div>
+{% endblock %}

@@ -1,0 +1,167 @@
+{% extends "master/master.html" %}
+<!-- {% from "macro.html" import macroExito %} -->
+{% block title %}Registrar Usuario{% endblock %}
+{% block content %}
+<script type="text/javascript" src="/static/js/usuariosCrearEditar.js"></script>
+<!-- Add icon library -->
+<link href="{{ url_for('static', filename='css/perfil.css') }}" rel="stylesheet" >
+
+<!-- Breadcrumbs-->
+<div class="row">
+    <div class="col-11">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('pages_home') }}">Home</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('listado_usuarios') }}">Listado Usuarios</a>
+            </li>
+            <li class="breadcrumb-item active">Registrar Usuario</li>
+        </ol>  
+    </div>
+    <div class="col-1">
+        <a class="btn btn-info" href="{{ url_for('listado_usuarios') }}">Volver</a>             
+    </div>
+</div> 
+
+<div class="table-title">
+    <div class="row">
+        <div class="col-sm-6">
+            <h2>Registrar Usuario</h2>
+        </div>
+    </div>
+</div>
+<div>
+    {% if titulo is defined and '' != titulo %}
+    <!-- <div class="alert alert-success alert-dismissible fade show mt-3" role="alert"> -->
+    <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+        {{ titulo }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endif %}
+    <form action="{{ url_for('user_create') }}" method="POST" id="formAgregar" name="formAgregar">
+        <div class="modal-body">
+
+            <div class="form-group">
+                <label for="usuario">Usuario</label>
+                {% if formRequest is defined %}
+                    <input type="text" id = "usuario" name="usuario" class="form-control" value="{{ formRequest.usuario }}">
+                {% else %}
+                    <input type="text" id = "usuario" name="usuario" class="form-control">
+                {% endif %}
+                <span style="color:red" id="spanUsuario">
+                {% if form is defined and form.errors.usuario %}
+                    {% for msjError in form.errors.usuario %}
+                        {{msjError}}
+                    {% endfor %}
+                {% endif %}
+                </span>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                {% if formRequest is defined %}
+                <input type="email" name="email" id="email" class="form-control" value="{{ formRequest.email }}">
+                {% else %}
+                <input type="email" name="email" id="email" class="form-control">
+                {% endif %}
+                <span style="color:red" id="spanEmail">
+                {% if form is defined and form.errors.email %}
+                    {% for msjError in form.errors.email %}
+                        {{msjError}}
+                    {% endfor %}
+                {% endif %}
+                </span>
+            </div>
+            <div class="form-group">
+                <label for="password">Contraseña</label>
+                {% if formRequest is defined %}
+                    <input type="password" name="password" id="password" class="form-control" value="{{ formRequest.password }}">
+                {% else %}
+                    <input type="password" name="password" id="password" class="form-control">
+                {% endif %}
+                <span style="color:red" id="spanPassword">
+                {% if form is defined and form.errors.password %}
+                    {% for msjError in form.errors.password %}
+                        {{msjError}}
+                    {% endfor %}
+                {% endif %}
+                </span>
+            </div>
+            <div class="form-group">
+                <label for="firstName">Nombre</label>
+                {% if formRequest is defined %}
+                <input type="text" name="firstName" id="firstName" class="form-control" value="{{ formRequest.firstName }}">
+                {% else %}
+                <input type="text" name="firstName" id="firstName" class="form-control">
+                {% endif %}
+                <span style="color:red" id="spanFirstName">
+                {% if form is defined and form.errors.firstName %}
+                    {% for msjError in form.errors.firstName %}
+                        {{msjError}}
+                    {% endfor %}
+                {% endif %}
+                </span>
+            </div>
+            <div class="form-group">
+                <label for="lastName">Apellido</label>
+                {% if formRequest is defined %}
+                <input type="text" name="lastName" id="lastName" class="form-control" value="{{ formRequest.lastName }}">
+                {% else %}
+                <input type="text" name="lastName" id="lastName" class="form-control">
+                {% endif %}
+                <span style="color:red" id="spanLastName">
+                {% if form is defined and form.errors.lastName %}
+                    {% for msjError in form.errors.lastName %}
+                        {{msjError}}
+                    {% endfor %}
+                {% endif %}
+                </span>
+            </div>
+        </div>
+
+        <div class="modal-header">
+            <h4 class="modal-title">Agregar Roles</h4>
+        </div>
+        <br>
+        <span style="color:red" id="spanRoles"></span>
+
+        {% if rolesUsuario is defined %}
+            {% for rol in roles %}
+                {% if rol.id | string in rolesUsuario %}
+                    <div>
+                        <input type="checkbox" id="roles_{{rol.id}}" name="roles" value="{{rol.id}}" checked>
+                        <label for="roles_{{rol.id}}">{{rol.nombre}}</label>
+                    </div>
+                {% else %}
+                    <div>
+                        <input type="checkbox" id="roles_{{rol.id}}" name="roles" value="{{rol.id}}">
+                        <label for="roles_{{rol.id}}">{{rol.nombre}}</label>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% else %}
+            {% for rol in roles %}
+                <div>
+                    <input type="checkbox" id="roles_{{rol.id}}" name="roles" value="{{rol.id}}">
+                    <label for="roles_{{rol.id}}">{{rol.nombre}}</label>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- {% if form is defined and form.errors.roles %}
+            {% for msjError in form.errors.roles %}
+                <span style="color:red">{{msjError}}</span>
+            {% endfor %}
+        {% endif %} -->
+
+
+        <div class="modal-footer">
+            <a type="button" class="btn btn-default" href="{{ url_for('listado_alumnos') }}">Cancelar</a>
+            <input type="button" onclick="validarAgregarUsuario()" class="btn btn-success" value="Agregar">
+        </div>
+    </form>
+</div>
+
+{% endblock %}

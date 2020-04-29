@@ -1,0 +1,69 @@
+{% extends "master/master.html" %}
+{% block title %}Nuestras orquestas{% endblock %}
+{% block content %}
+<div class="row">
+  <div class="col-4">
+    <div class="list-group" id="list-tab" role="tablist">
+      <a class="list-group-item list-group-item-action active" id="list-1" data-toggle="list" href="#info-1" role="tab" aria-controls="info-1">Orquestas</a>
+      <a class="list-group-item list-group-item-action" id="list-2" data-toggle="list" href="#info-2" role="tab" aria-controls="info-2">Ensamble de Cellos</a>
+      <a class="list-group-item list-group-item-action" id="list-3" data-toggle="list" href="#info-3" role="tab" aria-controls="info-3">Banda de Vientos</a>
+      <a class="list-group-item list-group-item-action" id="list-4" data-toggle="list" href="#info-4" role="tab" aria-controls="info-4">Quinteto de Vientos</a>
+      <a class="list-group-item list-group-item-action" id="list-5" data-toggle="list" href="#info-5" role="tab" aria-controls="info-5">Camerata</a>
+      <a class="list-group-item list-group-item-action" id="list-6" data-toggle="list" href="#info-6" role="tab" aria-controls="info-6">Pre-Camerata</a>
+      <a class="list-group-item list-group-item-action" id="list-7" data-toggle="list" href="#info-7" role="tab" aria-controls="info-7">Pre-Juvenil</a>
+      <a class="list-group-item list-group-item-action" id="list-8" data-toggle="list" href="#info-8" role="tab" aria-controls="info-8">Inicial</a>
+    </div>
+  </div>
+  <div class="col-8">
+    <div class="tab-content" id="nav-tabContent">
+      <div class="tab-pane fade show active" id="info-1" role="tabpanel" aria-labelledby="list-1">
+        <p class="text-justify">
+          <img src="{{ url_for('static', filename='img/decorativas/img2.jpg') }}" class="rounded mx-auto d-block img-fluid" alt="" style="height: 400px;">
+        </p>
+      </div>
+      <div class="tab-pane fade" id="info-2" role="tabpanel" aria-labelledby="list-2">
+        <p class="text-justify">
+          Formado a fines de 2012, el Ensamble de Cellos de la Orquesta Escuela de Berisso surge bajo la necesidad de enriquecer las herramientas de trabajo técnico-musicales de los estudiantes de la catedra de violoncello que hayan alcanzado un determinado nivel de responsabilidad y desempeño instrumental abordando el repertorio para este tipo de formación.
+          Algunos de los lugares en los que el Ensamble de Cellos se ha presentado son: B.A. Arena en mar del plata, Instituto Terrero de La Plata, Apertura de la Fiesta del Inmigrante en Berisso, Auditorio del MICA de Tecnopolis, Hotel Four Seasons de Recoleta, Auditorio del Concejo Deliberante de General Belgrano y recientemente en el auditorio YMCA en caba y Teatro York de Olivos en el marco del V Festival Latinoamericano de Cello, en el cual se le ha adjudicado el “Premio Especial a la Labor Pedagógico-Musical”
+        </p>
+      </div>
+      <div class="tab-pane fade" id="info-3" role="tabpanel" aria-labelledby="list-3">
+        <p class="text-justify">
+          Proximamente...
+        </p>
+      </div>
+      <div class="tab-pane fade" id="info-4" role="tabpanel" aria-labelledby="list-4">
+        <p class="text-justify">
+          Proximamente...
+        </p>
+      </div>
+      <div class="tab-pane fade" id="info-5" role="tabpanel" aria-labelledby="list-5">
+        <p class="text-justify">
+          La Camerata esta formada por profesores y alumnos avanzados de la Orquesta Escuela de Berisso, que luego de un riguroso concurso acceden a una beca de estudios. Su fin principal es brindar una intensiva capacitación en el abordaje de la Música Orquestal y Camarística.
+          <br>
+          <br>Violines: José Bondar, Lucas Vega, Octavio Savinelli, Lucas Portos, Leonel Miranda, Katherine Vargas
+          <br>Violas: Sofía Velazquez, Alma Irigoyen
+          <br>Violoncellos: Juan José Sarriés, Giuliana García.
+          <br>Contrabajo: Ramiro Minasso
+          <br>Director: José Bondar
+        </p>
+      </div>
+      <div class="tab-pane fade" id="info-6" role="tabpanel" aria-labelledby="list-6">
+        <p class="text-justify">
+          La Orquesta Pre-Camerata funciona como la primera agrupación instrumental de cuerdas frotadas, cuyos objetivos atienden por primera vez la figura del liderazgo y no del director de la orquesta. El líder toca el instrumento y dirige la orquesta. La modalidad de interconexión musical se acentúa ampliamente y les exige una mayor concentración y estudio a sus integrantes. Ellos, habiendo superado varios niveles del programa por medio del desarrollo de la técnica performativa, logran cumplir con una agenda pautada de conciertos.<br>La Pre-Camerata es el último eslabón amateur del programa, que posiciona a los integrantes con los buenos valores de una convivencia cotidiana y el rigor necesario para el estudio personal, tanto para continuar avanzando en la práctica artística con intenciones profesionales, como en cualquier actividad, oficio o profesión que ellos decidan para sus vidas.
+        </p>
+      </div>
+      <div class="tab-pane fade" id="info-7" role="tabpanel" aria-labelledby="list-7">
+        <p class="text-justify">
+          La “Orquesta Pre-Juvenil” de la Orquesta Escuela de Berisso está formada por chicos y chicas que cumplieron con los objetivos propuestos en la Orquesta Inicial. De ahora en adelante no solo tendrán que abordar obras de mayor dificultad y ampliar notablemente sus conocimientos musicales, sino que también deberán incorporar el compromiso de estudio individual e ir desarrollando tareas mínimas de ayuda para con los mas pequeños. La permanencia en la Orquesta Pre-Juvenil es de 1 a 3 años.
+        </p>
+      </div>
+      <div class="tab-pane fade" id="info-8" role="tabpanel" aria-labelledby="list-8">
+        <p class="text-justify">
+          La Orquesta Inicial es la primera instancia en la que los chicos y jóvenes experimentan el trabajo en orquesta. Está integrada principalmente por niños de 6 a 12 años y es la formación más numerosa de la Orquesta Escuela de Berisso. Los alumnos ingresan a ella luego de adquirir los conocimientos básicos musicales y de manejo del instrumento. Durante su permanencia (entre 1 y 3 años) aprenderán a convivir y cooperar en grupo, y desarrollarán las habilidades técnicas necesarias para poder abordar melodías u obras de mediana dificultad.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

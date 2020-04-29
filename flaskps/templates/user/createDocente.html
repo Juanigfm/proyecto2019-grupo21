@@ -1,0 +1,286 @@
+{% extends "master/master.html" %}
+<!-- {% from "macro.html" import macroExito %} -->
+{% block title %}Registrar Docente{% endblock %}
+{% block content %}
+<script type="text/javascript" src="/static/js/alumnosCrearEditar.js"></script>
+<!-- Add icon library -->
+<link href="{{ url_for('static', filename='css/perfil.css') }}" rel="stylesheet" >
+<!-- Breadcrumbs-->
+<div class="row">
+    <div class="col-11">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('pages_home') }}">Home</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('listado_docentes') }}">Listado Docentes</a>
+            </li>
+            <li class="breadcrumb-item active">{{ titulo }} Docente</li>
+        </ol>
+    </div>
+    <div class="col-1">
+        <a class="btn btn-info" href="{{ url_for('listado_docentes') }}">Volver</a>             
+    </div>
+</div>
+<div class="table-title">
+    <div class="row">
+        <div class="col-sm-6">
+            <h2>{{titulo}} Docente</h2>
+        </div>
+    </div>
+</div>
+<div>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show mt-3" role="alert">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    <form action="{{ url_for('docente_create') if titulo == 'Registrar' else url_for('docente_update') }}" method="POST" id="formAgregar" name="formAgregar">
+        <div class="modal-body">
+            
+            <div class="form-group">
+                <label for="nombre">Nombre</label>
+                {% if formRequest is defined %}
+                <input type="text" name="nombre" id="nombre" class="form-control" value="{{ formRequest.nombre }}">
+                {% else %}
+                <input type="text" name="nombre" id="nombre" class="form-control"
+                    value="{{ '' if docente is not defined else docente.nombre }}">
+                {% endif %}
+                <span style="color:red" id="spanNombre">
+                    {% if form is defined and form.errors.nombre %}
+                    {% for msjError in form.errors.nombre %}
+                    {{msjError}}
+                    {% endfor %}
+                    {% endif %}
+                </span>
+            </div>
+            <div class="form-group">
+                <label for="apellido">Apellido</label>
+                {% if formRequest is defined %}
+                <input type="text" name="apellido" id="apellido" class="form-control" value="{{ formRequest.apellido }}">
+                {% else %}
+                <input type="text" name="apellido" id="apellido" class="form-control"
+                    value="{{ '' if docente is not defined else docente.apellido }}">
+                {% endif %}
+                <span style="color:red" id="spanApellido">
+                    {% if form is defined and form.errors.apellido %}
+                    {% for msjError in form.errors.apellido %}
+                    {{msjError}}
+                    {% endfor %}
+                    {% endif %}
+                </span>
+            </div>
+            <div class="form-group">
+                <label for="fecha_nac">Fecha de nacimiento</label>
+                {% if formRequest is defined %}
+                <input type="date" name="fecha_nac" id="fecha_nac" class="form-control" value="{{ formRequest.fecha_nac }}">
+                {% else %}
+                <input type="date" name="fecha_nac" id="fecha_nac" class="form-control"
+                    value="{{ '' if docente is not defined else docente.fecha_nac }}">
+                {% endif %}
+                <span style="color:red" id="spanFechaNac">
+                    {% if form is defined and form.errors.fechaNac %}
+                    {% for msjError in form.errors.fecha_nac %}
+                    {{msjError}}
+                    {% endfor %}
+                    {% endif %}
+                </span>
+            </div>
+            <div class="form-group">
+                <label for="localidades">Localidades</label>
+            
+                <select name="localidades" id="localidades" class="form-control">
+                </select>
+                {% if docente is defined %}
+                    <input type="hidden" id="hiddenIdLocalidad" name="hiddenIdLocalidad" value="{{docente.localidad_id}}">
+                {% else %}
+                    <input type="hidden" id="hiddenIdLocalidad" name="hiddenIdLocalidad" value="{{ '0' if formRequest is not defined else formRequest.localidades }}">
+                {% endif %}
+            
+                <span style="color:red" id="spanLocalidades">
+                    {% if form is defined and form.errors.localidades %}
+                    {% for msjError in form.errors.localidades %}
+                    {{msjError}}
+                    {% endfor %}
+                    {% endif %}
+                </span>
+            </div>
+            <div class="form-group">
+                <label for="domicilio">Domicilio</label>
+                {% if formRequest is defined %}
+                <input type="text" name="domicilio" id="domicilio" class="form-control" value="{{ formRequest.domicilio }}">
+                {% else %}
+                <input type="text" name="domicilio" id="domicilio" class="form-control"
+                    value="{{ '' if docente is not defined else docente.domicilio }}">
+                {% endif %}
+                <span style="color:red" id="spanDomicilio">
+                    {% if form is defined and form.errors.domicilio %}
+                    {% for msjError in form.errors.domicilio %}
+                    {{msjError}}
+                    {% endfor %}
+                    {% endif %}
+                </span>
+            </div>
+
+            <div class="form-group">
+                <label for="generos">Género</label>
+            
+                <select name="generos" id="generos" class="form-control">
+                    <option value="0">Seleccione</option>
+                    {% for aux in generos %}
+                    {% if (formRequest is defined and formRequest.generos == aux.id | string) or (docente is defined and docente.genero_id == aux.id) %}
+                    <option value="{{aux.id}}" selected>{{aux.nombre}}</option>
+                    {% else %}
+                    <option value="{{aux.id}}">{{aux.nombre}}</option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+            
+                <span style="color:red" id="spanGeneros">
+                    {% if form is defined and form.errors.generos %}
+                    {% for msjError in form.errors.generos %}
+                    {{msjError}}
+                    {% endfor %}
+                    {% endif %}
+                </span>
+            </div>
+            
+            <div class="form-group">
+                <label for="tiposDocumento">Tipo de documento</label>
+            
+                <select name="tiposDocumento" id="tiposDocumento" class="form-control">
+                </select>
+                {% if docente is defined %}
+                    <input type="hidden" id="hiddenIdTipoDocumento" name="hiddenIdTipoDocumento" value="{{docente.tipo_doc_id}}">
+                {% else %}
+                    <input type="hidden" id="hiddenIdTipoDocumento" name="hiddenIdTipoDocumento" value="{{ '0' if formRequest is not defined else formRequest.tiposDocumento }}">
+                {% endif %}
+            
+                <span style="color:red" id="spanTiposDocumento">
+                    {% if form is defined and form.errors.tiposDocumento %}
+                    {% for msjError in form.errors.tiposDocumento %}
+                    {{msjError}}
+                    {% endfor %}
+                    {% endif %}
+                </span>
+            </div>
+            
+            <div class="form-group">
+                <label for="numero">Número de documento</label>
+                {% if formRequest is defined %}
+                <input type="text" name="numero" id="numero" class="form-control" value="{{ formRequest.numero }}">
+                {% else %}
+                <input type="text" name="numero" id="numero" class="form-control" value="{{ '' if docente is not defined else docente.numero }}">
+                {% endif %}
+                <span style="color:red" id="spanNumero">
+                    {% if form is defined and form.errors.numero %}
+                    {% for msjError in form.errors.numero %}
+                    {{msjError}}
+                    {% endfor %}
+                    {% endif %}
+                </span>
+            </div>
+            
+            <div class="form-group">
+                <label for="tel">Teléfono</label>
+                {% if formRequest is defined %}
+                <input type="text" name="tel" id="tel" class="form-control" value="{{ formRequest.tel }}">
+                {% else %}
+                <input type="text" name="tel" id="tel" class="form-control"
+                    value="{{ '' if docente is not defined else docente.tel }}">
+                {% endif %}
+                <span style="color:red" id="spanTel">
+                    {% if form is defined and form.errors.tel %}
+                    {% for msjError in form.errors.tel %}
+                    {{msjError}}
+                    {% endfor %}
+                    {% endif %}
+                </span>
+            </div>
+
+            
+            {% if titulo == "Editar" %}
+                {% if docente is defined %}
+                    <input type="hidden" name="id" id="id" value="{{ docente.id }}">
+                {% else %}
+                    <input type="hidden" name="id" id="id" value="{{ formRequest.id }}">
+                {% endif %}
+            {% endif %}
+            
+        <div class="modal-footer">
+            <a type="button" class="btn btn-default" href="{{ url_for('listado_docentes') }}">Cancelar</a>
+            <input type="button" onclick="validarAgregarAlumno()" class="btn btn-success" value="{{titulo}}">
+        </div>
+    </form>
+</div>
+
+<script>
+
+    // var misCabeceras = new Headers();
+
+    // var miInit = { method: 'GET',
+    //             headers: misCabeceras,
+    //             mode: 'cors',
+    //             cache: 'default' };
+
+    $( document ).ready(function() {
+        var localidades = document.getElementById('localidades')
+        var tiposDocumento = document.getElementById('tiposDocumento')
+        getTipoDocumento();
+        getLocalidades();
+    });
+
+    window.addEventListener('load', function(){
+        // console.log(document.getElementById('localidades').childNodes.length);
+    });
+
+    function getLocalidades() {
+        fetch('https://api-referencias.proyecto2019.linti.unlp.edu.ar/localidad')
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(myJson) {
+            idLocalidadSelected = document.getElementById('hiddenIdLocalidad').value;
+            localidades.innerHTML = '<option value="0">Seleccione</option>'
+            myJson.forEach(element => localidades.innerHTML += printOption(element, idLocalidadSelected));
+        }).catch(function(error) {
+            console.log('Hubo un problema con la petición Fetch:' + error.message);
+        });
+    } 
+
+    function printOption(element, id) {
+        let op = '';
+        op += '<option value='+element.id+' ';
+        if (String(element.id) == String(id)){
+            op += 'selected';
+        }
+        op += '>'+element.nombre+'</option>';
+        return op;
+    }
+    
+    function getTipoDocumento() {
+        fetch('https://api-referencias.proyecto2019.linti.unlp.edu.ar/tipo-documento')
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(myJson) {
+            idTipoSelected = document.getElementById('hiddenIdTipoDocumento').value;
+            tiposDocumento.innerHTML = '<option value="0">Seleccione</option>'
+            myJson.forEach(element => tiposDocumento.innerHTML += printOption(element, idTipoSelected));
+            // myJson.forEach(element => tiposDocumento.innerHTML = tiposDocumento.innerHTML + '<option value="'+element.id+'">'+element.nombre+'</option>');
+        })
+        .catch(function(error) {
+            console.log('Hubo un problema con la petición Fetch:' + error.message);
+        });
+        console.log(tiposDocumento.innerHTML);
+    } 
+</script>
+
+{% endblock %}

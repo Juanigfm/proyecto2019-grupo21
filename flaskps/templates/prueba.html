@@ -1,0 +1,29 @@
+{% block content %}
+    <p>Prueba</p>
+    <p>{{titulo}}</p>
+    {% if form.errors.usuario %}
+        {% for msjError in form.errors.usuario %} 
+            <p>{{msjError}}</p>
+        {% endfor %} 
+    {% endif %}
+    {% if form.errors.email %}
+        {% for msjError in form.errors.email %} 
+            <p>{{msjError}}</p>
+        {% endfor %} 
+    {% endif %} 
+    {% if form.errors.password %}
+        {% for msjError in form.errors.password %} 
+            <p>{{msjError}}</p>
+        {% endfor %} 
+    {% endif %}
+    {% if form.errors.firstName %}
+        {% for msjError in form.errors.firstName %} 
+            <p>{{msjError}}</p>
+        {% endfor %} 
+    {% endif %}
+    {% if form.errors.lastName %}
+        {% for msjError in form.errors.lastName %} 
+            <p>{{msjError}}</p>
+        {% endfor %} 
+    {% endif %}
+{% endblock %}

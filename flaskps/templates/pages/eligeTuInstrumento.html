@@ -1,0 +1,100 @@
+{% extends "master/master.html" %}
+{% block title %}Elegi tu instrumento{% endblock %}
+{% block content %}
+<div class="card">
+  <div class="card-header">
+    Elegi un instrumento
+  </div>
+  <div class="card-body">
+    <!-- <h5 class="card-title"></h5> -->
+    <p class="card-text text-justify">
+      Aquí vas a poder escuchar como suenan los instrumentos que enseñamos a tocar en la Orquesta Escuela de Berisso.<br>
+      Elegí el que mas te gusta y escribinos a oeberisso@gmail.com o por mensaje de Facebook diciéndonos en que zona de Berisso o alrededores vivís, en que horarios vas al colegio y
+      te informaremos en cual de nuestros núcleos podés inscribirte, o también podes acercarte los días sábados de 9 a 12hs a la Escuela Nº 25 de Berisso, calle 126 e/ 89 y 90.
+    </p>
+
+    <div class="accordion" id="accordionExample">
+      <div class="card">
+        <div class="card-header" id="headingOne">
+          <h2 class="mb-0">
+            <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+              Instrumentos de cuerdas
+            </button>
+          </h2>
+        </div>
+        <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+          <div class="card-body">
+
+            <div class="row">
+              <div class="col-3">
+                <!-- List group -->
+                <div class="list-group" id="myList" role="tablist">
+                  <a class="list-group-item list-group-item-action" data-toggle="list" href="#Contrabajo" role="tab">Contrabajo</a>
+                  <a class="list-group-item list-group-item-action" data-toggle="list" href="#Violoncello" role="tab">Violoncello</a>
+                  <a class="list-group-item list-group-item-action" data-toggle="list" href="#Viola" role="tab">Viola</a>
+                  <a class="list-group-item list-group-item-action" data-toggle="list" href="#Violin" role="tab">Violin</a>
+                </div>
+              </div>
+              <div class="col-9">
+                <!-- Tab panes -->
+                <div class="tab-content">
+                  <div class="tab-pane fade" id="Contrabajo" role="tabpanel">Contrabajo</div>
+                  <div class="tab-pane fade" id="Violoncello" role="tabpanel">Violoncello</div>
+                  <div class="tab-pane fade" id="Viola" role="tabpanel">Viola</div>
+                  <div class="tab-pane fade" id="Violin" role="tabpanel">Violin</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header" id="headingTwo">
+          <h2 class="mb-0">
+            <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+              Instrumentos de viento
+            </button>
+          </h2>
+        </div>
+        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+          <div class="card-body">
+
+            <div class="row">
+              <div class="col-3">
+                <!-- List group -->
+                <div class="list-group" id="myList2" role="tablist">
+                  <a class="list-group-item list-group-item-action" data-toggle="list" href="#Tuba" role="tab">Tuba</a>
+                  <a class="list-group-item list-group-item-action" data-toggle="list" href="#Trombon" role="tab">Trombón</a>
+                  <a class="list-group-item list-group-item-action" data-toggle="list" href="#Corno" role="tab">Corno</a>
+                  <a class="list-group-item list-group-item-action" data-toggle="list" href="#Trompeta" role="tab">Trompeta</a>
+                  <a class="list-group-item list-group-item-action" data-toggle="list" href="#Fagot" role="tab">Fagot</a>
+                  <a class="list-group-item list-group-item-action" data-toggle="list" href="#Oboe" role="tab">Oboe</a>
+                  <a class="list-group-item list-group-item-action" data-toggle="list" href="#Clarinete" role="tab">Clarinete</a>
+                  <a class="list-group-item list-group-item-action" data-toggle="list" href="#Flauta" role="tab">Flauta</a>
+                </div>
+              </div>
+              <div class="col-9">
+                <!-- Tab panes -->
+                <div class="tab-content">
+                  <div class="tab-pane fade" id="Tuba" role="tabpanel">Tuba</div>
+                  <div class="tab-pane fade" id="Trombon" role="tabpanel">Trombón</div>
+                  <div class="tab-pane fade" id="Corno" role="tabpanel">Corno</div>
+                  <div class="tab-pane fade" id="Trompeta" role="tabpanel">Trompeta</div>
+                  <div class="tab-pane fade" id="Fagot" role="tabpanel">Fagot</div>
+                  <div class="tab-pane fade" id="Oboe" role="tabpanel">Oboe</div>
+                  <div class="tab-pane fade" id="Clarinete" role="tabpanel">Clarinete</div>
+                  <div class="tab-pane fade" id="Flauta" role="tabpanel">Flauta</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

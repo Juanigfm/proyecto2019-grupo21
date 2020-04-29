@@ -1,0 +1,282 @@
+{% extends "master/master.html" %}
+{% block title %}Detalle Docente{% endblock %}
+{% block content %}
+<link href="{{ url_for('static', filename='css/perfil.css') }}" rel="stylesheet" >
+<script type="text/javascript" src="/static/js/perfil.js"></script>
+<script type="text/javascript" src="/static/js/usuariosCrearEditar.js"></script>
+
+{% if mapeo == "listadoDocente" %}
+<!-- Breadcrumbs-->
+<div class="row">
+    <div class="col-11">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('pages_home') }}">Home</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('listado_docentes') }}">Listado Docentes</a>
+            </li>
+            <li class="breadcrumb-item active">Detalle Docente</li>
+        </ol>
+    </div>
+    <div class="col-1">
+        <a class="btn btn-info" href="{{ url_for('listado_docentes') }}">Volver</a>             
+    </div>
+</div>
+{% elif mapeo == "detalleTaller" %}
+<!-- Breadcrumbs-->
+<div class="row">
+    <div class="col-11">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('pages_home') }}">Home</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('listado_talleres') }}">Listado Talleres</a>
+            </li>
+            <li class="breadcrumb-item"></li>
+                <form action = "{{ url_for('taller_detalle') }}" method="POST" id="myform">
+                    <input type="hidden" name="id" value="{{tallerId}}">
+                    <input type="hidden" name="clid" value="">
+                    <input type="hidden" name="mapeo" value="listadoTaller">
+                    <a href="#" onclick="document.getElementById('myform').submit()">Detalle Taller</a>
+                </form>
+            </li>
+            <li class="breadcrumb-item active"></li>
+            <li class="breadcrumb-item active">Detalle Docente</li>
+        </ol>
+    </div>
+    <div class="col-1">
+        <form action = "{{ url_for('taller_detalle') }}" method="POST">
+            <input type="hidden" name="id" value="{{tallerId}}">
+            <input type="hidden" name="clid" value="">
+            <input type="hidden" name="mapeo" value="listadoTaller">
+            <button class="btn btn-info" type="submit">Volver</button>             
+        </form>             
+    </div>
+</div>
+{% elif mapeo == "detalleTallerCiclo"%}
+<!-- Breadcrumbs-->
+<div class="row">
+    <div class="col-11">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('pages_home') }}">Home</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('listado_ciclos') }}">Listado Ciclos Lectivos</a>
+            </li>
+            <li class="breadcrumb-item"></li>
+                <form action = "{{ url_for('ciclo_detalle') }}" method="POST" id="myform1">
+                    <input type="hidden" name="clid" value="{{clid}}">
+                    <a href="#" onclick="document.getElementById('myform1').submit()">Detalle Ciclo Lectivo</a>
+                </form>
+            </li>
+            <li class="breadcrumb-item"></li>
+            <li class="breadcrumb-item"></li>
+                <form action = "{{ url_for('taller_detalle') }}" method="POST" id="myform">
+                    <input type="hidden" name="id" value="{{tallerId}}">
+                    <input type="hidden" name="clid" value="{{clid}}">
+                    <input type="hidden" name="mapeo" value="detalleCiclo">
+                    <a href="#" onclick="document.getElementById('myform').submit()">Detalle Taller</a>
+                </form>
+            </li>
+            <li class="breadcrumb-item active"></li>
+            <li class="breadcrumb-item active">Detalle Docente</li>
+        </ol>
+    </div>
+    <div class="col-1">
+        <form action = "{{ url_for('taller_detalle') }}" method="POST">
+            <input type="hidden" name="id" value="{{tallerId}}">
+            <input type="hidden" name="clid" value="{{clid}}">
+            <input type="hidden" name="mapeo" value="detalleCiclo">
+            <button class="btn btn-info" type="submit">Volver</button>             
+        </form>    
+    </div>
+</div>
+{% endif %}
+<!-- Add icon library -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show mt-3" role="alert">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+<div class="table-title">
+    <div class="row">
+        <div class="col-sm-6">
+            <h2>Detalle Docente</h2>
+        </div>
+        <div class="col-sm-6">
+        </div>
+    </div>
+</div>
+<div id="user-profile-2" class="user-profile">
+    <div class="tabbable">
+        <div class="tab-content no-border padding-24">
+            <div id="home" class="tab-pane in active">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-3 center">
+                        <span class="profile-picture">
+                            <img class="editable img-responsive" width="150" alt="photo" id="avatar2" src="{{ url_for('static', filename='img/user-avatar.png') }}">
+                        </span>
+                    </div>
+                    <div class="col-xs-12 col-sm-9">
+                        <h4 class="blue">
+                            <span class="middle">{{user.nombre}} {{user.apellido}}</span>
+                        </h4>
+
+                        <div class="profile-user-info">
+                            <div class="profile-info-row">
+                                <div class="profile-info-name"> Nacimiento </div>
+
+                                <div class="profile-info-value">
+                                    <span>{{user.fecha_nac}}</span>
+                                </div>
+                            </div>
+
+                            <div class="profile-info-row">
+                                <div class="profile-info-name"> Localidad </div>
+
+                                <div class="profile-info-value" id="localidad">
+                                  
+                                </div>
+                            </div>
+                            <div class="profile-info-row">
+                                <div class="profile-info-name"> Domicilio </div>
+
+                                <div class="profile-info-value">
+                                    <span>{{user.domicilio}}</span>
+                                </div>
+                            </div>
+                            <div class="profile-info-row">
+                                <div class="profile-info-name"> Sexo </div>
+                                <div class="profile-info-value">
+                                    <span>{{user.gen_nombre}}</span>
+                                </div>
+                            </div>
+                            <div class="profile-info-row">
+                                <div class="profile-info-name" > Tipo </div>
+
+                                <div class="profile-info-value" id="tipoDoc">
+                                </div>
+                            </div>
+                            <div class="profile-info-row">
+                                <div class="profile-info-name"> Documento </div>
+
+                                <div class="profile-info-value">
+                                    <span>{{user.numero}}</span>
+                                </div>
+                            </div>
+                            <div class="profile-info-row">
+                                <div class="profile-info-name"> Teléfono </div>
+
+                                <div class="profile-info-value">
+                                    <span>{{user.tel}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div><!-- /.col -->
+                </div><!-- /.row -->
+            </div>
+        </div>
+    </div>
+</div>
+
+{% for p in session['permisos'] %}
+{%  if "VER_CLASES" == p['nombre'] %}
+<div style="text-align: center">
+    <h3>Cronograma</h3>
+    <br>
+</div>
+{% if clases is defined and clases|length > 0%}
+<table class="table table-striped table-hover">
+    <thead>
+        <tr>
+            <th>Día</th>
+            <th>Inicio</th>
+            <th>Fin</th>
+            <th>Taller</th>
+            <th>Nucleo</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for c in clases %}
+        <tr>
+            <td>{{c.dia}}</td>
+            <td>{{c.hora_inicio}}</td>
+            <td>{{c.hora_fin}}</td>
+            <td>{{c.nombreTaller}}</td>
+            <td>{{c.nombreNucleo}}</td>
+            <td></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<br>
+{% else %}
+<!--empty state de búsqueda-->
+<div class="container d-flex justify-content-center align-items-center empty-state-home ">
+    <div class="empty-search text-center">
+        <label class="empty-txt">El docente no tiene clases asignadas</label>
+        <img src="{{ url_for('static', filename='img/empty-search.png') }}" class="img-fluid mx-auto d-block img-empty"
+            width="150px" alt="empty-search">
+    </div>
+</div>
+{% endif %}
+{%  endif   %}
+{%  endfor  %}
+
+<script>  
+$( document ).ready(function() {
+        var tipoDoc = document.querySelector('#tipoDoc');
+        var localidad = document.querySelector('#localidad');
+        var localidadId = '{{ user.id}}';
+        var tipoDocId = '{{ user.tipo_doc_id }}';
+        getTipoDocumento(tipoDocId);
+        getLocalidad(localidadId);
+    });   
+        
+    function getLocalidad(userId) {
+        fetch('https://api-referencias.proyecto2019.linti.unlp.edu.ar/localidad')
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            data.forEach((element)=> {
+               if(element.id === userId) {
+                    localidad.innerHTML = localidad.innerHTML + '<span id="localidadName">'+element.nombre+'</span>';
+               }
+            });
+
+            //myJson.forEach(element => localidades.innerHTML = localidades.innerHTML + '<option value="'+element.id+'">'+element.nombre+'</option>');
+        })
+        .catch(function(error) {
+            console.log('Hubo un problema con la petición Fetch:' + error.message);
+        });
+    } 
+
+    function getTipoDocumento(tipoDocId) {
+        fetch('https://api-referencias.proyecto2019.linti.unlp.edu.ar/tipo-documento')
+        .then(response => response.json())
+        .then(data => {
+            data.forEach((element)=>{
+                if( element.id === tipoDocId)
+                tipoDoc.innerHTML = tipoDoc.innerHTML + '<span id="tipoDocumento">'+element.nombre+'</span>';
+            });
+        })
+        .catch(function(error) {
+            console.log('Hubo un problema con la petición Fetch:' + error.message);
+        });
+    }
+    </script> 
+
+{% endblock %}
+
+

@@ -1,0 +1,130 @@
+{% extends "master/master.html" %}
+{% block title %}{{ titulo }} instrumento{% endblock %}
+{% block content %}
+<!-- Breadcrumbs-->
+<div class="row">
+  <div class="col-11">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{{ url_for('pages_home') }}">Home</a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="{{ url_for('instrumentos_lista') }}">Listado instrumentos</a>
+        </li>
+        <li class="breadcrumb-item active">{{ titulo }} instrumento</li>
+    </ol>
+  </div>
+  <div class="col-1">
+      <a class="btn btn-info" href="{{ url_for('instrumentos_lista') }}">Volver</a>             
+  </div>
+</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show mt-3" role="alert">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+<div class="card bg-light mb-3">
+  <div class="card-header">{{ titulo }} instrumento</div>
+  <div class="card-body p-4">
+    <form class="" action="{{ url_for('instrumentos_create') if titulo == 'Nuevo' else url_for('instrumentos_update') }}" method="post" enctype="multipart/form-data">
+      <div class="row">
+        <div class="col">
+          <div class="form-group">
+            <label for="Nombre">Nombre</label>
+            <input type="text" class="form-control" id="Nombre" name="Nombre" placeholder="Ingresar nombre..." value="{{instrumento['nombre']}}">
+            {% if form is not none and form.errors.Nombre %}
+            <span style="color:red" id="spanNombre">
+                {% for msjError in form.errors.Nombre %}
+                {{msjError}}
+                {% endfor %}
+            </span>
+            {% endif %}
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label for="Tipo">Tipo</label>
+            <select class="form-control" id="Tipo" name="Tipo">
+              <option value="0">Seleccione</option>
+              {% for aux in tipos %}
+                {% if aux.id==instrumento['tipo_id'] %}
+                  <option value="{{aux.id}}" selected>{{aux.nombre}}</option>
+                {% else %}
+                  <option value="{{aux.id}}">{{aux.nombre}}</option>
+                {% endif %}
+              {% endfor %}
+            </select>
+            {% if form is not none and form.errors.Tipo %}
+            <span style="color:red" id="spanNombre">
+                {% for msjError in form.errors.Tipo %}
+                {{msjError}}
+                {% endfor %}
+            </span>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="Identificador">Identificador</label>
+        <input type="text" class="form-control" id="Identificador" name="Identificador" placeholder="Ingresar identificador..." value="{{instrumento['codigo']}}">
+        {% if form is not none and form.errors.Identificador %}
+        <span style="color:red" id="spanNombre">
+            {% for msjError in form.errors.Identificador %}
+            {{msjError}}
+            {% endfor %}
+        </span>
+        {% endif %}
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-3">
+          <label for="imagenActual">Imagen actual</label>
+          <img src="{{imagenActual}}" class="card-img" alt="Imagen" id="imagenActual" name="imagenActual">
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label for="Imagen">Imagen nueva</label>
+            <input type="file" class="form-control-file" id="Imagen" name="Imagen" accept="image/jpeg,image/x-png">
+            {% if form is not none and form.errors.Imagen %}
+            <span style="color:red" id="spanNombre">
+                {% for msjError in form.errors.Imagen %}
+                {{msjError}}
+                {% endfor %}
+            </span>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      {% if titulo == "Modificar" %}
+      <div class="row">
+        <div class="col">
+          <div class="form-check">
+            <input class="form-check-input" {{eliminarImg["estado"]}} type="checkbox" id="EliminarImg" name="EliminarImg" {{eliminarImg['valor']}}>
+            <label class="form-check-label" for="EliminarImg">Eliminar imagen</label>
+          </div>
+        </div>
+      </div>
+      <input type="hidden" name="id" id="id" value="{{ instrumento['id'] }}">
+      {% endif %}
+      <div class="row justify-content-center">
+        <button type="submit" class="btn btn-primary">Enviar</button>
+      </div>
+    </form>
+  </div>
+</div>
+<!-- Volver al listado -->
+<div class="row mb-3">
+  <div class="col">
+    <a class="d-block small" href="{{ url_for('instrumentos_lista') }}"><i class="fas fa-chevron-left"></i> Volver</a>
+  </div>
+</div>
+
+{% endblock %}

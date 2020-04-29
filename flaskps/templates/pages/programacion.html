@@ -1,0 +1,41 @@
+{% extends "master/master.html" %}
+{% block title %}Programacion{% endblock %}
+{% block content %}
+<div class="">
+
+<div class="card bg-light border-secondary mb-3">
+  <div class="row no-gutters">
+    <div class="col-md-3 d-block">
+      <img src="{{ url_for('static', filename='img/decorativas/img3.jpg') }}" class="card-img align-middle" alt="">
+    </div>
+    <div class="col-md-9">
+      <div class="card-body">
+        <h5 class="card-title">10 de Mayo de 2019 - 19:30</h5>
+        <h6 class="card-subtitle mb-2">Club Español de La Plata, calle 6 Nº 1030 e/ 53 y 54</h6>
+        <p class="card-text text-justify">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam tincidunt, neque sit amet sodales lacinia, sapien dui pellentesque leo, id pellentesque dui magna ut ante.</p>
+        <!-- <a href="#" class="card-link">Ejemplo 1 link</a> -->
+        <span class="card-link">Ejemplo 1 link</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card bg-light border-secondary mb-3">
+  <div class="row no-gutters">
+    <div class="col-md-3">
+      <img src="{{ url_for('static', filename='img/decorativas/img2.jpg') }}" class="card-img" alt="">
+    </div>
+    <div class="col-md-9">
+      <div class="card-body">
+        <h5 class="card-title">12 de Mayo de 2019 - 15:30 </h5>
+        <h6 class="card-subtitle mb-2">República de los Niños, La Plata</h6>
+        <p class="card-text text-justify">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam tincidunt, neque sit amet sodales lacinia, sapien dui pellentesque leo, id pellentesque dui magna ut ante.</p>
+        <!-- <a href="#" class="card-link">Ejemplo 2 link</a> -->
+        <span class="card-link">Ejemplo 2 link</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+{% endblock %}

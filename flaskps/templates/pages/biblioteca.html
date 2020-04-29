@@ -1,0 +1,74 @@
+{% extends "master/master.html" %}
+{% block title %}Biblioteca{% endblock %}
+{% block content %}
+<div class="accordion" id="accordionExample">
+  <div class="card">
+    <div class="card-header" id="headingOne">
+      <h2 class="mb-0">
+        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+          Partituras de Orquestas y Ensambles
+        </button>
+      </h2>
+    </div>
+    <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+      <div class="card-body">
+        <div class="btn-group-vertical">
+          <a class="btn btn-link text-left disabled" href="#" role="button">Orquesta Inicial</a>
+          <a class="btn btn-link text-left disabled" href="#" role="button">Orquesta Pre-Juvenil</a>
+          <a class="btn btn-link text-left disabled" href="#" role="button">Orquesta Pre-Camerata</a>
+          <a class="btn btn-link text-left disabled" href="#" role="button">Orquesta Juvenil</a>
+          <a class="btn btn-link text-left disabled" href="#" role="button">Banda de Vientos</a>
+          <a class="btn btn-link text-left disabled" href="#" role="button">Camerata</a>
+          <a class="btn btn-link text-left disabled" href="#" role="button">Ensamble de Cellos</a>
+          <a class="btn btn-link text-left disabled" href="#" role="button">Orquesta Sinfónica</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header" id="headingTwo">
+      <h2 class="mb-0">
+        <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+          Material de Cátedras de Instrumentos de Cuerdas
+        </button>
+      </h2>
+    </div>
+    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+      <div class="card-body">
+        <div class="btn-group-vertical">
+          <a class="btn btn-link text-left disabled" href="#" role="button">Cátedra de Violín</a>
+          <a class="btn btn-link text-left disabled" href="#" role="button">Cátedra de Viola</a>
+          <a class="btn btn-link text-left disabled" href="#" role="button">Cátedra de Cello</a>
+          <a class="btn btn-link text-left disabled" href="#" role="button">Cátedra de Contrabajo</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header" id="headingThree">
+      <h2 class="mb-0">
+        <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+          Material de Cátedras de Instrumentos de Viento
+        </button>
+      </h2>
+    </div>
+    <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
+      <div class="card-body">
+        <div class="btn-group-vertical">
+          <a class="btn btn-link text-left disabled" href="#" role="button">Cátedra de Flauta</a>
+          <a class="btn btn-link text-left disabled" href="#" role="button">Cátedra de Oboe</a>
+          <a class="btn btn-link text-left disabled" href="#" role="button">Cátedra de Clarinete</a>
+          <a class="btn btn-link text-left disabled" href="#" role="button">Cátedra de Fagot</a>
+          <a class="btn btn-link text-left disabled" href="#" role="button">Cátedra de Tompeta</a>
+          <a class="btn btn-link text-left disabled" href="#" role="button">Cátedra de Corno</a>
+          <a class="btn btn-link text-left disabled" href="#" role="button">Cátedra de Trombón</a>
+          <a class="btn btn-link text-left disabled" href="#" role="button">Cátedra de Bombardino</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

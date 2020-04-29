@@ -1,0 +1,124 @@
+{% extends "master/master.html" %}
+{% block title %}Talleres{% endblock %}
+{% block content %}
+<div class="">
+  <div class="container navbar-dark bg-dark py-2">
+    <div class="row">
+      <div class="col">
+        <span class="navbar-brand">Listado de talleres</span>
+      </div>
+      <div class="col-md-auto align-self-end">
+        <!-- <a href="#" class="btn btn-success"><span>Agregar taller</span></a> -->
+        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#nuevoTaller">Agregar taller</button>
+      </div>
+      <div class="col-md-auto align-self-end">
+        <form class="form-inline">
+          <select class="custom-select mx-3">
+            <option value="0" selected>Ciclo lectivo...</option>
+            <option value="1">Ciclo lectivo 1</option>
+            <option value="2">Ciclo lectivo 2</option>
+          </select>
+          <input class="form-control mr-sm-2" type="search" placeholder="Nombre..." aria-label="Search">
+          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <table class="table table-bordered table-striped">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col" class="text-center col-1">#</th>
+        <th scope="col" class="col-3">Taller</th>
+        <th scope="col" class="text-center col-2">Ciclo lectivo</th>
+        <th scope="col" class="text-center col-2">Ver</th>
+        <th scope="col" class="text-center col-2">Modificar</th>
+        <th scope="col" class="text-center col-2">Eliminar</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th scope="row" class="text-center col-1">1</th>
+        <td class="col-3">Ejemplo 1</td>
+        <td class="text-center col-2">1</td>
+        <td class="text-center col-2"><button type="button" class="btn btn-info">Ver</button></td>
+        <td class="text-center col-2"><button type="button" class="btn btn-success">Modificar</button></td>
+        <td class="text-center col-2"><button type="button" class="btn btn-danger">Eliminar</button></td>
+      </tr>
+      <tr>
+        <th scope="row" class="text-center col-1">2</th>
+        <td class="col-3">Ejemplo 2</td>
+        <td class="text-center col-2">2</td>
+        <td class="text-center col-2"><button type="button" class="btn btn-info">Ver</button></td>
+        <td class="text-center col-2"><button type="button" class="btn btn-success">Modificar</button></td>
+        <td class="text-center col-2"><button type="button" class="btn btn-danger">Eliminar</button></td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="row justify-content-md-center">
+    <div class="col-md-auto">
+      <nav aria-label="Page navigation">
+        <ul class="pagination">
+          <li class="page-item"><a class="page-link" href="#">Anterior</a></li>
+          <li class="page-item"><a class="page-link" href="#">1</a></li>
+          <li class="page-item"><a class="page-link" href="#">2</a></li>
+          <li class="page-item"><a class="page-link" href="#">3</a></li>
+          <li class="page-item"><a class="page-link" href="#">Siguiente</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="nuevoTaller" tabindex="-1" role="dialog" aria-labelledby="nuevoTallerTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="nuevoTallerTitle">Nuevo taller</h5>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="form-row mb-2">
+              <div class="col-8">
+                <label for="NombreDelTaller">Nombre del taller</label>
+                <input type="text" class="form-control" id="NombreDelTaller" placeholder="Nombre...">
+              </div>
+              <div class="col-4">
+                <label for="selectCicloLectivo">Ciclo lectivo</label>
+                <select class="form-control" id="selectCicloLectivo">
+                  <option>1</option>
+                  <option>2</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="selectProfesores">Profesores</label>
+              <select multiple class="form-control" id="selectProfesores">
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="selectAlumnos">Alumnos</label>
+              <select multiple class="form-control" id="selectAlumnos">
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+              </select>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-success">Guardar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

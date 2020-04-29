@@ -1,0 +1,63 @@
+{% extends "master/master.html" %}
+{% block title %}{{ titulo }} instrumento{% endblock %}
+{% block content %}
+<!-- Breadcrumbs-->
+<div class="row">
+  <div class="col-11">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{{ url_for('pages_home') }}">Home</a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="{{ url_for('instrumentos_lista') }}">Listado instrumentos</a>
+        </li>
+        <li class="breadcrumb-item active">{{ titulo }} instrumento</li>
+    </ol>
+  </div>
+  <div class="col-1">
+      <a class="btn btn-info" href="{{ url_for('instrumentos_lista') }}">Volver</a>             
+  </div>
+</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show mt-3" role="alert">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+<div class="card bg-light mb-3">
+  <div class="card-header">{{titulo}} instrumento</div>
+  <div class="row no-gutters">
+    <div class="col-md-4">
+      <img src="{{imagen}}" class="card-img" alt="Imagen">
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title">Nombre: {{ instrumento['nombre'] }}</h5>
+        <p class="card-text">
+          Tipo: {{ instrumento['nomTipo'] }}
+          <br>
+          ID: {{ instrumento['codigo'] }}
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Volver al listado -->
+<div class="row mb-3">
+  <div class="col">
+    <a class="d-block small" href="{{ url_for('instrumentos_lista') }}"><i class="fas fa-chevron-left"></i> Volver</a>
+  </div>
+</div>
+<div class="d-none">
+  {{ test }}
+</div>
+
+{% endblock %}

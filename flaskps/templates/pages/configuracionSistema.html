@@ -1,0 +1,91 @@
+{% extends "master/master.html" %}
+{% block title %}Configuración del sistema{% endblock %}
+{% block content %}
+<!-- Breadcrumbs-->
+<div class="row">
+  <div class="col-11">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{{ url_for('pages_home') }}">Home</a>
+        </li>
+        <li class="breadcrumb-item active">Configuracion del Sistema</li>
+    </ol>
+  </div>
+  <div class="col-1">
+      <a class="btn btn-info" href="{{ url_for('pages_home') }}">Volver</a>             
+  </div>
+</div>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show mt-3" role="alert">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+  {%  for elem in configElems %}
+    <div class="jumbotron">
+      <h2 class="">Elemento de {{elem.vista}}:</h2>
+      <div class="mx-3">
+        {%  if elem.vista=="sistema"  %}
+          <form class="formNumerico" action="{{url_for('pages_configUpdate')}}" method="POST">
+            <div class="form-group">
+              <label for="formGroupExampleInput"><h3>{{elem.titulo}}</h3></label>
+            </div>
+            {%  if elem.titulo == "Estado"  %}
+              <div class="form-group">
+                <div class="form-group">
+                    {%  if elem.cuerpo == "1"  %}
+                      <div class="custom-control custom-switch">
+                        <input type="checkbox" class="custom-control-input" id="customSwitch1" checked>
+                        <label class="custom-control-label" for="customSwitch1">  On/Off  </label>
+                      </div>
+                      <input type="hidden" class="form-control" placeholder="Example input" name="cuerpo" value="0">
+                    {%  else  %}
+                      <div class="custom-control custom-switch">
+                          <input type="checkbox" class="custom-control-input" id="customSwitch1">
+                          <label class="custom-control-label" for="customSwitch1">  On/Off  </label>
+                      </div>
+                      <input type="hidden" class="form-control" placeholder="Example input" name="cuerpo" value="1">
+                    {%  endif %}
+                </div>
+              </div>
+            {%  else  %}
+              <div class="form-group">
+                <label for="exampleFormControlTextarea1">Valor</label>
+                <input type="text" class="form-control numerico" id="numerico" placeholder="Example input" name="cuerpo" value="{{elem.cuerpo}}">
+                <span style="color:red" class="spanNumerico"></span>
+              </div>
+            {%  endif %}
+            <input type="hidden" class="form-control" placeholder="Example input" name="titulo" value="{{elem.titulo}}">
+            <input type="hidden" class="form-control" placeholder="Example input" name="id" value="{{elem.id}}">
+            <input type="hidden" class="form-control" placeholder="Example input" name="vista" value="{{elem.vista}}">
+            <button type="submit" onclick="validarConfiguracionSistemaNumerico()" class="btorigenn btn-success">Guardar</button>
+          </form>
+        {%  else  %}
+          <form class="" id="formTexto" action="{{url_for('pages_configUpdate')}}" method="POST">
+            <br>
+            <div class="form-group">
+              <label for="formGroupExampleInput">Título</label>
+              <input type="text" class="form-control textoTitulo" id="texto" placeholder="Example input" name="titulo" value="{{elem.titulo}}">
+              <span style="color:red" class="spanTextoTitulo"></span>
+            </div>
+            <div class="form-group">
+              <label for="exampleFormControlTextarea1">Cuerpo</label>
+              <textarea class="form-control texto" id="textoCuerpo" rows="4" placeholder="Example input" name="cuerpo">{{elem.cuerpo}}</textarea>
+              <span style="color:red" class="spanTextoCuerpo"></span>
+            </div>
+            <input type="hidden" class="form-control" placeholder="Example input" name="id" value="{{elem.id}}">
+            <input type="hidden" class="form-control" placeholder="Example input" name="vista" value="{{elem.vista}}">
+            <button type="submit" onclick="validarConfiguracionSistemaTexto()" class="btorigenn btn-success">Guardar</button>
+          </form>
+        {%  endif %}
+      </div>
+    </div>
+  {%  endfor  %}
+{% endblock %}

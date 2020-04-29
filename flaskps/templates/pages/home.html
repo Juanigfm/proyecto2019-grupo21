@@ -1,0 +1,26 @@
+{% extends "master/master.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<!-- Error  -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show mt-3" role="alert">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+<!-- Breadcrumbs-->
+<ol class="breadcrumb">
+        <li class="breadcrumb-item active">Home</li>
+    </ol>
+<!-- # Fin Error -->
+  <h1 class="text-center">Bienvenido a <br> La Orquesta Escuela de Berisso</h1>
+  <p class="lead mt-5">{{datos[0].titulo}}</p>
+  <hr class="my-4">
+  <p class="text-justify">{{datos[0].cuerpo}}</p>
+{% endblock %}

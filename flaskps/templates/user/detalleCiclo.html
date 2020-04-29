@@ -1,0 +1,85 @@
+{% extends "master/master.html" %}
+{% block title %}Detalle de Ciclo Lectivo{% endblock %}
+{% block content %}
+<script type="text/javascript" src="/static/js/taller.js"></script>
+{{clid}}
+<!-- Breadcrumbs-->
+<div class="row">
+    <div class="col-11">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('pages_home') }}">Home</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('listado_ciclos') }}">Listado Ciclos Lectivos</a>
+            </li>
+            <li class="breadcrumb-item active">Detalle Ciclo Lectivo</li>
+        </ol>
+    </div>
+    <div class="col-1">
+        <a class="btn btn-info" href="{{ url_for('listado_ciclos') }}">Volver</a>             
+    </div>
+</div>
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show mt-3" role="alert">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+    <script src="../static/js/api.js"></script>
+    <h1>Detalle de Ciclo Lectivo</h1> <br>
+    <h5>
+    <strong>Semestre:</strong> {{ciclo.semestre}}<br>
+    <strong>Desde:</strong> {{ciclo.fecha_ini.strftime('%d-%m-%Y')}} <br>
+    <strong>Hasta:</strong> {{ciclo.fecha_fin.strftime('%d-%m-%Y')}} <br><br></h5>
+    
+    <h3>Talleres    </h3>
+    <br>
+
+    <table class="table table-responsive table-striped table-hover">
+        <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Nombre corto</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for taller in talleres %}
+            <tr>
+                <td>{{taller.nombre}}</td>
+                <td>{{taller.nombre_corto}}</td>
+                <td>
+                    <form action ="{{url_for('taller_detalle')}}" method="POST" id="formDetalle">
+                        <input type="hidden" name="mapeo" value="detalleCiclo">
+                        <!-- <input type="hidden" name="id" value="{{taller.id}}"> -->
+                        <input type="hidden" name="id" id="detMod">
+                        <input type="hidden" name="clid" value="{{ciclo.id}}">
+                        <a href="#" class="" onclick="detUser(event,'{{ taller.id }}')">
+                            <i class="fas fa-search" data-toggle="tooltip" title="Detalle"></i>
+                        </a>
+                        <!-- <input type="submit" value="Detalle" class="btn btn-warning"> -->
+                    </form>
+                </td>                         
+            </tr> 
+        {% endfor %}
+        </tbody>
+    </table>             
+    <br>
+    <form action="{{ url_for('ciclo_create_taller_temp') }}" method="POST">
+        <div class="modal-body">
+            <div class="form-group">
+                <input type="hidden" name="clid" value="{{ ciclo.id }}">
+                <input type="hidden" name="mapeo" value="detalleCiclo">
+                <input type="submit" class="btn btn-success" value="Crear taller">                    
+            </div>
+        </div> 
+    </form> 
+{%  endblock    %}

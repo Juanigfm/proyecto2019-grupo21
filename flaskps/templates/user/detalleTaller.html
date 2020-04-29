@@ -1,0 +1,503 @@
+{% extends "master/master.html" %}
+{% block title %}Detalle Taller{% endblock %}
+{% block content %}
+    <script type="text/javascript" src="/static/js/taller.js"></script>
+    <script src="{{ url_for('static', filename='js/listadoAlumnos.js') }}"></script>
+    <script src="../static/js/api.js"></script>
+    <script type="text/javascript" src="/static/js/clase.js"></script>
+
+    {% if mapeo == "listadoTaller" %}
+    <!-- Breadcrumbs-->
+    <div class="row">
+        <div class="col-11">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{{ url_for('pages_home') }}">Home</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{{ url_for('listado_talleres') }}">Listado Talleres</a>
+                </li>
+                <li class="breadcrumb-item active">Detalle Taller</li>
+            </ol>
+        </div>
+        <div class="col-1">
+            <a class="btn btn-info" href="{{ url_for('listado_talleres') }}">Volver</a>             
+        </div>
+    </div>
+    {% elif mapeo == "detalleCiclo" %}
+    <!-- Breadcrumbs-->
+    <div class="row">
+        <div class="col-11">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{{ url_for('pages_home') }}">Home</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{{ url_for('listado_ciclos') }}">Listado Ciclos Lectivos</a>
+                </li>
+                <li class="breadcrumb-item"></li>
+                    <form action = "{{ url_for('ciclo_detalle') }}" method="POST" id="myform">
+                        <input type="hidden" name="clid" value="{{clid}}">
+                        <a href="#" onclick="document.getElementById('myform').submit()">Detalle Ciclo Lectivo</a>
+                    </form>
+                </li>
+                <li class="breadcrumb-item"></li>
+                <li class="breadcrumb-item active">Detalle Taller</li>
+            </ol>
+        </div>
+        <div class="col-1">
+            <form action = "{{ url_for('ciclo_detalle') }}" method="POST">
+                <input type="hidden" name="clid" value="{{clid}}">
+                <button class="btn btn-info" type="submit">Volver</button>             
+            </form>            
+        </div>
+    </div>
+    {% endif %}
+    
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show mt-3" role="alert">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+
+    <h1>Detalle Taller</h1> <br>
+    <h5><strong>{{taller.nombreT}}</strong> <br>
+    <strong>Semestre:</strong> {{taller.semestre}} <br>
+    <strong>Desde:</strong> {{taller.ini.strftime('%d-%m-%Y')}} <br>
+    <strong>Hasta:</strong> {{taller.fin.strftime('%d-%m-%Y')}} <br><br></h5>
+{%  for p in session['permisos']    %}
+    {%  if "CREAR_ASISTENCIA" in p['nombre'] %}
+        <form action = "{{ url_for('tomar_asistencia_temp') }}" method="POST" id="dorm" style="display: inline-flex">
+            <input type="hidden" name="tallerId" value="{{taller.id}}">
+            {% if mapeo == "listadoTaller" %}
+            <input type="hidden" name="mapeo" value="detalleTaller">
+            {% elif mapeo == "detalleCiclo" %}
+            <input type="hidden" name="mapeo" value="detalleTallerCiclo">
+            {%  endif   %}
+            <input type="hidden" name="clid" value="{{clid}}">
+            <input type="hidden" name="user" id="detMod">
+            <input type="submit" value="Tomar asistencia" class="btn btn-info"> 
+        </form>
+    {%  endif   %}
+{%  endfor  %}
+{%  for p in session['permisos']    %}
+    {%  if "VER_ASISTENCIAS" in p['nombre'] %}
+        <form action = "{{ url_for('ver_asistencias') }}" method="POST" style="display: inline-flex">
+            <input type="hidden" name="tallerId" value="{{taller.id}}">
+            {% if mapeo == "listadoTaller" %}
+                <input type="hidden" name="mapeo" value="detalleTaller">
+                <input type="hidden" name="clid" value="0">
+            {% elif mapeo == "detalleCiclo" %}
+                <input type="hidden" name="mapeo" value="detalleTallerCiclo">
+                <input type="hidden" name="clid" value="{{clid}}">
+            {%  endif   %}
+            <input type="submit" value="Ver Asistencia" class="btn btn-info"> 
+        </form>
+    {%  endif   %}
+{%  endfor   %}
+
+    <!-- -----------------------------------------CRONOGRAMA---------------------------------------- -->
+
+    <div style="text-align: center">
+        <h3>Cronograma</h3>
+        <br>
+    </div>      
+    {% if clases is defined and clases|length > 0%}
+    <table class="table table-striped table-hover">
+        <thead>
+        <tr>
+            <th>Día</th>
+            <th>Inicio</th>
+            <th>Fin</th>
+            <th>Docente</th>
+            <th>Acciones</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for c in clases %}
+            <tr>
+                <td>{{c.dia}}</td>
+                <td>{{c.hora_inicio}}</td>
+                <td>{{c.hora_fin}}</td>
+                <td>{{c.nombre}} {{c.apellido}}</td>
+                <td>
+                    {% for p in session['permisos'] %}
+                        {%  if "AGREGAR_EDITAR_CLASE" == p['nombre'] %}
+                            <a style="cursor:pointer;" class="edit" onclick="editClase('{{c.id}}','{{c.dia}}','{{c.hora_inicio}}','{{c.hora_fin}}','{{c.docente_id}}')">
+                                <i class="material-icons" data-toggle="tooltip" title="Modificar">&#xE254;</i>
+                            </a>
+                        {%  endif   %}
+                    {%  endfor  %}
+                    {% for p in session['permisos'] %}
+                        {%  if "ELIMINAR_CLASE" == p['nombre'] %}
+                            <a href="#deleteClaseModal" class="delete" data-toggle="modal" onclick="eliminarTaller('{{ c.id }}')">
+                                <i class="material-icons" data-toggle="tooltip" title="Eliminar">&#xE872;</i>
+                            </a>
+                        {%  endif   %}
+                    {%  endfor  %}
+                </td>
+
+            </tr> 
+        {% endfor %}
+        </tbody>
+    </table>
+    <br>
+    {% else %}
+        <!--empty state de búsqueda-->
+        <div class="container d-flex justify-content-center align-items-center empty-state-home ">
+            <div class="empty-search text-center">
+            <label class="empty-txt">No se encontraron clases asignadas</label>
+            <img src="{{ url_for('static', filename='img/empty-search.png') }}" class="img-fluid mx-auto d-block img-empty" width="150px" alt="empty-search">
+            </div>
+        </div>
+    {% endif %}
+
+    {% for p in session['permisos'] %}
+        {%  if "AGREGAR_EDITAR_CLASE" == p['nombre'] %}
+        <div class="modal-body">
+            <div class="form-group">
+                <label for=""><h5 id="nombre">Agregar clase</h5></label><br>
+                <form action="{{ url_for('add_clase') }}" name="formAddClaseATaller" id="formAddClaseATaller" method="POST">
+                    Día:
+                    <select name="dia" id="dia">
+                        <option value="0">Seleccione</option> 
+                        <option value="LUNES">Lunes</option> 
+                        <option value="MARTES">Martes</option>
+                        <option value="MIÉRCOLES">Miércoles</option>
+                        <option value="JUEVES">Jueves</option>
+                        <option value="VIERNES">Viernes</option>
+                        <option value="SÁBADO">Sábado</option>
+                        <option value="DOMINGO">Domingo</option>
+                    </select>
+                    Hora de inicio: 
+                    <input type="time" id="inicio" name="inicio" value="00:00">
+                    Hora de fin: 
+                    <input type="time" id="fin" name="fin" value="23:59">
+                    Profesor a cargo: 
+                    <select name="docente" id="docente">
+                        <option value="0">Seleccione</option> 
+                        {% for doc in docentes %}
+                        <option value="{{ doc.doc_id }}">{{ doc.nombre }} {{ doc.apellido }}</option>
+                        {% endfor %}
+                    </select>
+                    {% if mapeo == "detalleCiclo" %}
+                    <input type="hidden" name="mapeo" value="detalleCiclo">
+                    {% elif mapeo == "listadoTaller" %}
+                    <input type="hidden" name="mapeo" value="listadoTaller">
+                    {% endif %} 
+                    <input type="hidden" name="id" value="{{taller.id}}">
+                    <input type="hidden" name="clid" value="{{clid}}">
+                    <input type="hidden" name="claseEditar" id="claseEditar">
+                    <input type="button" onclick="validarAgregarClase()" id="inputAgregar" class="btn btn-success" value="Agregar">
+                    <input type="button" style="display:none;" onclick="validarEditarClase()" id="inputEditar" class="btn btn-warning" value="Modificar"> 
+                    <input type="button" style="display:none;" onclick="cancelarEditarClase()" id="inputCancelar" class="btn btn-danger" value="Cancelar">   
+                </form>                
+            </div>
+            <span style="color:red" id="spanClase"></span> 
+        </div> 
+        {%  endif   %}
+    {%  endfor  %}
+    <br>
+
+    <!-- -------------------------------------------------------------------------------------------- -->
+
+    <div style="text-align: center">
+        <h3>Listado Docentes</h3>
+    </div>  
+    <br><br>
+    
+    {% if docentes|length > 0%}
+    <table class="table table-striped table-hover">
+        <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Número de documento</th>
+            <td></td>
+            <td></td>
+        </tr>
+        </thead>
+        <tbody>
+        {% for docente in docentes %}
+            <tr>
+                <td>{{docente.nombre}}</td>
+                <td>{{docente.apellido}}</td>
+                <td>{{docente.doc_num}}</td>
+                <td>
+                {% for p in session['permisos'] %}
+                    {%  if "DETALLE_DOCENTE" == p['nombre'] %}
+                        <td style="display: inline-flex">
+                            <form action = "{{ url_for('docente_detalle_temp') }}" method="POST" id="formDetalleDoc">
+                                <input type="hidden" name="tallerId" value="{{taller.id}}">
+                                {% if mapeo == "listadoTaller" %}
+                                <input type="hidden" name="mapeo" value="detalleTaller">
+                                {% elif mapeo == "detalleCiclo" %}
+                                <input type="hidden" name="mapeo" value="detalleTallerCiclo">
+                                {%  endif   %}
+                                <input type="hidden" name="clid" value="{{clid}}">
+                                <!-- <input type="hidden" name="user" value="{{docente.doc_id}}"> -->
+                                <input type="hidden" name="user" id="detModDoc">
+                                <a href="#" class="" onclick="detUserDoc(event,'{{ docente.doc_id }}')">
+                                    <i class="fa fa-address-book" data-toggle="tooltip" title="Detalle"></i>
+                                </a>
+
+                                <!-- <input type="submit" value="Detalle" class="btn btn-warning"> -->
+                            </form>
+                    {%  endif   %}
+                {%  endfor  %}
+                
+                {%  for p in session['permisos']    %}
+                    {%  if "ELIMINAR_DOCENTE_TALLER" == p['nombre'] %}
+                        <a href="#deleteDocenteModal" class="delete" data-toggle="modal" onclick="borrarUser3(event,'{{taller.id}}','{{clid}}','{{docente.doc_id}}')">
+                            <i class="material-icons" data-toggle="tooltip" title="Eliminar">&#xE872;</i>
+                        </a>
+                    {%  endif   %}
+                {%  endfor  %}
+                    <!-- <input type="button" href="#deleteDocenteModal" onclick="borrarUser3(event,{{taller.id}},{{clid}},{{docente.doc_id}})" class="btn btn-danger" value="Eliminar" data-toggle="modal"></input> -->
+                </td>
+            </tr> 
+        {% endfor %}
+        </tbody>
+    </table>
+    <br>
+    {% else %}
+        <!--empty state de búsqueda-->
+        <div class="container d-flex justify-content-center align-items-center empty-state-home ">
+            <div class="empty-search text-center">
+            <label class="empty-txt">No se encontraron docentes</label>
+            <img src="{{ url_for('static', filename='img/empty-search.png') }}" class="img-fluid mx-auto d-block img-empty" width="150px" alt="empty-search">
+            </div>
+        </div>
+    {% endif %}
+
+    {%  for p in session['permisos']    %}
+        {%  if "AGREGAR_DOCENTE_TALLER" == p['nombre'] %}
+        <form action="{{ url_for('taller_agregar_docente') }}" name="formAddDocenteATaller" method="POST">
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for=""><h5>Agregar docente</h5></label>  <br><br>
+                    <select name="docente" id="docenteAdd">
+                        <option value="0">Seleccione</option>
+                        {% for doc in docs %}
+                            <option value="{{doc.id}}">{{ doc.nombre }} {{ doc.apellido }} {{ doc.doc_num }}</option>
+                        {% endfor %} 
+                    </select> 
+                    <input type="hidden" name="id" value="{{ taller.id }}"> 
+                    <input type="hidden" name="clid" value="0">
+                    {% if mapeo == "detalleCiclo" %}
+                    <input type="hidden" name="mapeo" value="detalleCiclo">
+                    {% elif mapeo == "listadoTaller" %}
+                    <input type="hidden" name="mapeo" value="listadoTaller">
+                    {% endif %} 
+                    <input type="hidden" name="clid" value="{{ clid }}">
+                    <input type="button" onclick="validarAddDocenteATaller()" class="btn btn-success" value="Agregar">                    
+                </div>
+                <span style="color:red" id="spanDocente"></span> 
+            </div> 
+        </form> 
+        {%  endif   %}
+    {%  endfor  %}
+    <br>
+
+    <div style="text-align: center">
+        <h3>Listado Estudiantes</h3>
+    </div>
+    <br><br>
+
+    {% if alumnos|length > 0 %}
+    <table class="table table-striped table-hover">
+        <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Número de documento</th>
+            <td></td>
+            <td></td>
+        </tr>
+        </thead>
+        <tbody>
+        {% for alumno in alumnos %}
+            <tr>
+                <td>{{alumno.nombre}}</td>
+                <td>{{alumno.apellido}}</td>
+                <td>{{alumno.doc_num}}</td>
+                <td>
+                    {%  for p in session['permisos']    %}
+                        {%  if "DETALLE_ALUMNO" == p['nombre'] %}
+                            <td style="display: inline-flex">
+                                <form action = "{{ url_for('alumno_detalle_temp') }}" method="POST" id="formDetalleAlu">
+                                    <input type="hidden" name="tallerId" value="{{taller.id}}">
+                                    {% if mapeo == "listadoTaller" %}
+                                    <input type="hidden" name="mapeo" value="detalleTaller">
+                                    {% elif mapeo == "detalleCiclo" %}
+                                    <input type="hidden" name="mapeo" value="detalleTallerCiclo">
+                                    {%  endif   %}
+                                    <input type="hidden" name="clid" value="">
+                                    <!-- <input type="hidden" name="user" value="{{alumno.est_id}}"> -->
+                                    <input type="hidden" name="user" id="detModAlumno">
+                                    <a href="#" class="" onclick="detUserAlu(event,'{{ alumno.est_id }}')">
+                                        <i class="fa fa-address-book" data-toggle="tooltip" title="Detalle"></i>
+                                    </a>
+                                    <!-- <input type="submit" value="Detalle" class="btn btn-warning"> -->
+                                </form>
+
+                        {%  endif   %}
+                    {%  endfor  %}
+                    {%  for p in session['permisos']    %}
+                        {%  if "ELIMINAR_ALUMNO_TALLER" == p['nombre'] %}
+                        <a href="#deleteEstudianteModal" class="delete" data-toggle="modal" onclick="borrarUser4(event,'{{taller.id}}','{{clid}}','{{alumno.est_id}}')">
+                            <i class="material-icons" data-toggle="tooltip" title="Eliminar">&#xE872;</i>
+                        </a>
+                        {%  endif   %}
+                    {%  endfor  %}
+                        <!-- <input type="button" href="#deleteEstudianteModal" onclick="borrarUser4(event,{{taller.id}},{{clid}},{{alumno.est_id}})" class="btn btn-danger" value="Eliminar" data-toggle="modal"></input> -->
+                    </td>
+            </tr> 
+        {% endfor %}
+        </tbody>
+    </table>
+    <br>
+    {% else %}
+        <!--empty state de búsqueda-->
+        <div class="container d-flex justify-content-center align-items-center empty-state-home ">
+            <div class="empty-search text-center">
+            <label class="empty-txt">No se encontraron estudiantes</label>
+            <img src="{{ url_for('static', filename='img/empty-search.png') }}" class="img-fluid mx-auto d-block img-empty" width="150px" alt="empty-search">
+            </div>
+        </div>
+    {% endif %}
+
+    {%  for p in session['permisos']    %}
+        {%  if "AGREGAR_ALUMNO_TALLER" == p['nombre'] %}
+            <form action="{{ url_for('taller_agregar_alumno') }}" name="formAddAlumnoATaller" method="POST">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for=""><h5>Agregar estudiante</h5></label>  <br><br>
+                        <select name="alumno" id="alumno">
+                            <option value="0">Seleccione</option>
+                            {% for al in alums %}
+                                <option value="{{al.id}}">{{ al.nombre }} {{ al.apellido }} {{al.doc_num}}</option>
+                            {% endfor %} 
+                        </select>  
+                        <input type="hidden" name="id" value="{{ taller.id }}">
+                        <input type="hidden" name="clid" value="0">
+                        {% if mapeo == "detalleCiclo" %}
+                        <input type="hidden" name="mapeo" value="detalleCiclo">
+                        {% elif mapeo == "listadoTaller" %}
+                        <input type="hidden" name="mapeo" value="listadoTaller">
+                        {% endif %}
+                        <input type="hidden" name="clid" value="{{ clid }}">
+                        <input type="button" onclick="validarAddAlumnoATaller()" class="btn btn-success" value="Agregar">                    
+                    </div>
+                    <span style="color:red" id="spanAlumno"></span> 
+                </div> 
+            </form>
+            {%  endif   %}
+        {%  endfor  %}
+    <br>
+    <!-- Delete Docente Modal HTML -->
+<div id="deleteDocenteModal" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form action="{{url_for('taller_baja_docente')}}" method="POST">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Eliminar Docente</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                            <div class="form-group">
+                                <input type="hidden" name="id" id="idDocenteEliminar">
+                                <input type="hidden" name="clid" id="idCicloDocenteEliminar">
+                                <input type="hidden" name="docid" id="idCiclo2DocenteEliminar">
+                                {% if mapeo == "detalleCiclo" %}
+                                <input type="hidden" name="mapeo" value="detalleCiclo">
+                                {% elif mapeo == "listadoTaller" %}
+                                <input type="hidden" name="mapeo" value="listadoTaller">
+                                {% endif %}                            
+                            </div>
+                        <p>¿Está seguro de que desea eliminar el docente del taller?</p>
+                        <p class="text-danger"><small>Al hacerlo no podrá asignarlo en las clases del taller.</small></p>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancelar">
+                        <input type="submit" class="btn btn-danger" value="Eliminar">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+<!-- Delete Estudiante Modal HTML -->
+<div id="deleteEstudianteModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="{{url_for('taller_baja_alumno')}}" method="POST">
+                <div class="modal-header">
+                    <h4 class="modal-title">Eliminar Estudiante</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div class="modal-body">
+                        <div class="form-group">
+                            <input type="hidden" name="id" id="idAlumnoEliminar">
+                            <input type="hidden" name="clid" id="idCicloAlumnoEliminar">
+                            <input type="hidden" name="alid" id="idCiclo2AlumnoEliminar">  
+                            {% if mapeo == "detalleCiclo" %}
+                                <input type="hidden" name="mapeo" value="detalleCiclo">
+                                {% elif mapeo == "listadoTaller" %}
+                                <input type="hidden" name="mapeo" value="listadoTaller">
+                                {% endif %}                           
+                        </div>
+                    <p>¿Está seguro de que desea eliminar el alumno del taller?</p>
+                    <p class="text-danger"><small>Al eliminarlo se perderán todas las asistencias.</small></p>
+                </div>
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancelar">
+                    <input type="submit" class="btn btn-danger" value="Eliminar">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Clase Modal HTML -->
+<div id="deleteClaseModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="{{url_for('delete_clase')}}" method="POST">
+                <div class="modal-header">
+                    <h4 class="modal-title">Eliminar Clase</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div class="modal-body">
+                        <div class="form-group">
+                            <input type="hidden" name="clid" value="{{clid}}">
+                            <input type="hidden" name="id" value="{{taller.id}}">
+                            <input type="hidden" name="claseEliminarId" id="claseEliminarId"> 
+                            {% if mapeo == "detalleCiclo" %}
+                            <input type="hidden" name="mapeo" value="detalleCiclo">
+                            {% elif mapeo == "listadoTaller" %}
+                            <input type="hidden" name="mapeo" value="listadoTaller">
+                            {% endif %}                           
+                        </div>
+                    <p>¿Está seguro de que desea eliminar la clase?</p>
+                    <!-- <p class="text-danger"><small></small></p> -->
+                </div>
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancelar">
+                    <input type="submit" class="btn btn-danger" value="Eliminar">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
